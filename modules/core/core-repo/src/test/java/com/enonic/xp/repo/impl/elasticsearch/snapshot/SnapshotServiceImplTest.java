@@ -6,6 +6,7 @@ import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
 import org.mockito.Mockito;
 
+import com.enonic.xp.app.ApplicationService;
 import com.enonic.xp.content.ContentConstants;
 import com.enonic.xp.node.DeleteSnapshotParams;
 import com.enonic.xp.node.RestoreParams;
@@ -34,6 +35,8 @@ public class SnapshotServiceImplTest
 
     private RepositoryServiceImpl repositoryService;
 
+    private ApplicationService applicationService;
+
     @Before
     public void setUp()
         throws Exception
@@ -41,6 +44,9 @@ public class SnapshotServiceImplTest
         super.setUp();
 
         this.snapshotService = new SnapshotServiceImpl();
+
+        this.applicationService = Mockito.mock( ApplicationService.class );
+        this.snapshotService.setApplicationService( applicationService );
 
         final NodeRepositoryServiceImpl nodeRepositoryService = new NodeRepositoryServiceImpl();
         nodeRepositoryService.setIndexServiceInternal( this.indexServiceInternal );

@@ -31,6 +31,8 @@ public interface ApplicationService
 
     Application installStoredApplication( final NodeId nodeId );
 
+    void installAllStoredApplications();
+
     void uninstallApplication( final ApplicationKey key, final boolean triggerEvent );
 
     void invalidate( ApplicationKey key );

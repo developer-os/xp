@@ -189,7 +189,7 @@ public final class ApplicationServiceImpl
         return application;
     }
 
-    private void installAllStoredApplications()
+    public void installAllStoredApplications()
     {
         LOG.info( "Searching for installed applications" );
 

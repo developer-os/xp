@@ -9,6 +9,7 @@ import org.elasticsearch.action.admin.cluster.snapshots.restore.RestoreSnapshotR
 
 import com.google.common.collect.Lists;
 
+import com.enonic.xp.app.ApplicationService;
 import com.enonic.xp.node.RestoreResult;
 import com.enonic.xp.repository.RepositoryId;
 import com.enonic.xp.security.SystemConstants;
@@ -20,11 +21,14 @@ public class SnapshotRestoreExecutor
 
     private final RepositoryId repositoryToRestore;
 
+    private final ApplicationService applicationService;
+
     private SnapshotRestoreExecutor( final Builder builder )
     {
         super( builder );
         repositoryToRestore = builder.repositoryToRestore;
         this.snapshotName = builder.snapshotName;
+        this.applicationService = builder.applicationService;
     }
 
     public RestoreResult execute()
@@ -64,7 +68,14 @@ public class SnapshotRestoreExecutor
     private RestoreResult doRestoreRepo( final RepositoryId repositoryId )
     {
         final Set<String> indexNames = getIndexNames( repositoryId );
-        return doRestoreIndices( indexNames );
+        final RestoreResult restoreResult = doRestoreIndices( indexNames );
+
+        if ( repositoryId.equals( SystemConstants.SYSTEM_REPO.getId() ) )
+        {
+            applicationService.installAllStoredApplications();
+        }
+
+        return restoreResult;
     }
 
     private RestoreResult doRestoreIndices( final Set<String> indices )
@@ -118,6 +129,8 @@ public class SnapshotRestoreExecutor
 
         private RepositoryId repositoryToRestore;
 
+        private ApplicationService applicationService;
+
         public Builder repositoryToRestore( final RepositoryId repositoryToRestore )
         {
             this.repositoryToRestore = repositoryToRestore;
@@ -127,6 +140,12 @@ public class SnapshotRestoreExecutor
         public Builder snapshotName( final String snapshotName )
         {
             this.snapshotName = snapshotName;
+            return this;
+        }
+
+        public Builder applicationService( final ApplicationService applicationService )
+        {
+            this.applicationService = applicationService;
             return this;
         }
 

@@ -23,6 +23,7 @@ import org.osgi.service.component.annotations.Reference;
 
 import com.google.common.collect.Sets;
 
+import com.enonic.xp.app.ApplicationService;
 import com.enonic.xp.node.DeleteSnapshotParams;
 import com.enonic.xp.node.DeleteSnapshotsResult;
 import com.enonic.xp.node.RestoreParams;
@@ -35,7 +36,7 @@ import com.enonic.xp.repo.impl.node.NodeHelper;
 import com.enonic.xp.repo.impl.snapshot.SnapshotService;
 import com.enonic.xp.repository.RepositoryService;
 
-@Component
+@Component(immediate = true)
 public class SnapshotServiceImpl
     implements SnapshotService
 {
@@ -46,6 +47,8 @@ public class SnapshotServiceImpl
     private RepoConfiguration configuration;
 
     private RepositoryService repositoryService;
+
+    private ApplicationService applicationService;
 
     @Override
     public SnapshotResult snapshot( final SnapshotParams snapshotParams )
@@ -82,6 +85,7 @@ public class SnapshotServiceImpl
             repositoryToRestore( restoreParams.getRepositoryId() ).
             snapshotName( restoreParams.getSnapshotName() ).
             client( this.client ).
+            applicationService( this.applicationService ).
             repositoryService( this.repositoryService ).
             snapshotRepositoryName( SNAPSHOT_REPOSITORY_NAME ).
             build().
@@ -272,8 +276,15 @@ public class SnapshotServiceImpl
     }
 
     @Reference
+    public void setApplicationService( final ApplicationService applicationService )
+    {
+        this.applicationService = applicationService;
+    }
+
+    @Reference
     public void setRepositoryService( final RepositoryService repositoryService )
     {
         this.repositoryService = repositoryService;
     }
+
 }
