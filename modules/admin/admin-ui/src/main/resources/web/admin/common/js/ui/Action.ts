@@ -34,6 +34,8 @@ module api.ui {
 
         private afterExecuteListeners: {(action: Action): void}[] = [];
 
+        private stateChangeListeners: {(action: Action): void}[] = [];
+
         constructor(label?: string, shortcut?: string, global?: boolean) {
             this.label = label;
 
@@ -132,6 +134,7 @@ module api.ui {
             if (value !== this.visible) {
                 this.visible = value;
                 this.notifyPropertyChanged();
+                this.notifyStateChanged();
             }
         }
 
@@ -239,6 +242,24 @@ module api.ui {
                 listener(this);
             });
         }
+
+
+        onStateChange(listener: (action: Action) => void) {
+            this.stateChangeListeners.push(listener);
+        }
+
+        unStateChange(listener: (action: Action) => void) {
+            this.stateChangeListeners = this.stateChangeListeners.filter((currentListener: () => void) => {
+                return listener !== currentListener;
+            });
+        }
+
+        private notifyStateChanged() {
+            this.stateChangeListeners.forEach((listener: (action: Action) => void) => {
+                listener(this);
+            });
+        }
+
 
         clearListeners() {
             this.beforeExecuteListeners = [];

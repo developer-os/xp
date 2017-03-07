@@ -21,6 +21,8 @@ import {ContentPublishMenuButton} from './ContentPublishMenuButton';
 import {TreeNodeParentOfContent} from './TreeNodeParentOfContent';
 import {TreeNodesOfContentPath} from './TreeNodesOfContentPath';
 
+import Action = api.ui.Action;
+import ActionButton = api.ui.button.ActionButton;
 import TreeNode = api.ui.treegrid.TreeNode;
 import BrowseItem = api.app.browse.BrowseItem;
 import UploadItem = api.ui.uploader.UploadItem;
@@ -132,10 +134,16 @@ export class ContentBrowsePanel extends api.app.browse.BrowsePanel<ContentSummar
             });
 
             let contentPublishMenuButton = new ContentPublishMenuButton(this.getBrowseActions());
+            let contentDeleteButton = new ActionButton(this.getBrowseActions().CONFIRM_DELETE_CONTENT);
+            contentDeleteButton.addClass('content-delete-button');
+            contentDeleteButton.setVisible(false);
 
             this.browseToolbar.appendChild(contentPublishMenuButton);
+            this.browseToolbar.appendChild(contentDeleteButton);
             this.browseToolbar.appendChild(nonMobileDetailsPanelsManager.getToggleButton());
 
+            contentDeleteButton.getAction().onStateChange((action: Action) => contentPublishMenuButton.setVisible(!contentDeleteButton.isVisible()));
+            
             this.subscribeDetailsPanelsOnEvents(nonMobileDetailsPanelsManager, contentPublishMenuButton);
 
             return rendered;
@@ -149,7 +157,7 @@ export class ContentBrowsePanel extends api.app.browse.BrowsePanel<ContentSummar
         let item = this.getFirstSelectedOrHighlightedBrowseItem(selection);
         this.doUpdateDetailsPanel(item ? item.getModel() : null);
     }
-
+    
     private subscribeDetailsPanelsOnEvents(nonMobileDetailsPanelsManager: NonMobileDetailsPanelsManager,
                                            contentPublishMenuButton: ContentPublishMenuButton) {
 

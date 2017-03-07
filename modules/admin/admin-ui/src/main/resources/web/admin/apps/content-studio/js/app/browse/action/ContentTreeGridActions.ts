@@ -5,6 +5,7 @@ import {ShowNewContentDialogAction} from './ShowNewContentDialogAction';
 import {PreviewContentAction} from './PreviewContentAction';
 import {EditContentAction} from './EditContentAction';
 import {DeleteContentAction} from './DeleteContentAction';
+import {ConfirmDeleteContentAction} from './ConfirmDeleteContentAction';
 import {DuplicateContentAction} from './DuplicateContentAction';
 import {MoveContentAction} from './MoveContentAction';
 import {SortContentAction} from './SortContentAction';
@@ -42,6 +43,7 @@ export class ContentTreeGridActions implements TreeGridActions<ContentSummaryAnd
     public PUBLISH_TREE_CONTENT: Action;
     public UNPUBLISH_CONTENT: Action;
     public TOGGLE_SEARCH_PANEL: Action;
+    public CONFIRM_DELETE_CONTENT: Action;
 
     private actions: api.ui.Action[] = [];
 
@@ -52,6 +54,7 @@ export class ContentTreeGridActions implements TreeGridActions<ContentSummaryAnd
         this.PREVIEW_CONTENT = new PreviewContentAction(grid);
         this.EDIT_CONTENT = new EditContentAction(grid);
         this.DELETE_CONTENT = new DeleteContentAction(grid);
+        this.CONFIRM_DELETE_CONTENT = new ConfirmDeleteContentAction(grid);
         this.DUPLICATE_CONTENT = new DuplicateContentAction(grid);
         this.MOVE_CONTENT = new MoveContentAction(grid);
         this.SORT_CONTENT = new SortContentAction(grid);
@@ -108,6 +111,7 @@ export class ContentTreeGridActions implements TreeGridActions<ContentSummaryAnd
         this.SHOW_NEW_CONTENT_DIALOG_ACTION.setEnabled(true);
         this.EDIT_CONTENT.setEnabled(false);
         this.DELETE_CONTENT.setEnabled(false);
+        this.CONFIRM_DELETE_CONTENT.setVisible(false);
         this.DUPLICATE_CONTENT.setEnabled(false);
         this.MOVE_CONTENT.setEnabled(false);
         this.SORT_CONTENT.setEnabled(false);
@@ -127,22 +131,32 @@ export class ContentTreeGridActions implements TreeGridActions<ContentSummaryAnd
         let treePublishEnabled = true;
         let unpublishEnabled = true;
 
-        let eachOnline = contentBrowseItems.every((browseItem) => {
-            return this.isOnline(browseItem.getModel().getCompareStatus());
+        let allAreOnline = contentBrowseItems.length > 0;
+        let allArePendingDelete = contentBrowseItems.length > 0;
+        let someArePublished = false;
+
+        contentBrowseItems.forEach((browseItem) => {
+            let compareStatus = browseItem.getModel().getCompareStatus();
+
+            if (allAreOnline && !this.isOnline(compareStatus)) {
+                allAreOnline = false;
+            }
+            if (allArePendingDelete && !this.isPendingDelete(compareStatus)) {
+                allArePendingDelete = false;
+            }
+            if (!someArePublished && this.isPublished(compareStatus)) {
+                someArePublished = true;
+            }
         });
 
-        let anyPublished = contentBrowseItems.some((browseItem) => {
-            return this.isPublished(browseItem.getModel().getCompareStatus());
-        });
-
-        const publishEnabled = !eachOnline;
+        const publishEnabled = !allAreOnline;
         if (this.isEveryLeaf(contentSummaries)) {
             treePublishEnabled = false;
-            unpublishEnabled = anyPublished;
+            unpublishEnabled = someArePublished;
         } else if (this.isOneNonLeaf(contentSummaries)) {
-            unpublishEnabled = anyPublished;
+            unpublishEnabled = someArePublished;
         } else if (this.isNonLeafInMany(contentSummaries)) {
-            unpublishEnabled = anyPublished;
+            unpublishEnabled = someArePublished;
         }
 
         this.SHOW_NEW_CONTENT_DIALOG_ACTION.setEnabled(contentSummaries.length < 2);
@@ -151,6 +165,8 @@ export class ContentTreeGridActions implements TreeGridActions<ContentSummaryAnd
         this.DUPLICATE_CONTENT.setEnabled(contentSummaries.length === 1);
         this.MOVE_CONTENT.setEnabled(true);
         this.SORT_CONTENT.setEnabled(contentSummaries.length === 1 && contentSummaries[0].hasChildren());
+
+        this.CONFIRM_DELETE_CONTENT.setVisible(allArePendingDelete);
 
         this.PUBLISH_CONTENT.setEnabled(publishEnabled);
         this.PUBLISH_TREE_CONTENT.setEnabled(treePublishEnabled);
@@ -177,6 +193,10 @@ export class ContentTreeGridActions implements TreeGridActions<ContentSummaryAnd
 
     private isOnline(status: api.content.CompareStatus): boolean {
         return status === api.content.CompareStatus.EQUAL;
+    }
+
+    private isPendingDelete(status: api.content.CompareStatus): boolean {
+        return status === api.content.CompareStatus.PENDING_DELETE;
     }
 
     private doUpdateActionsEnabledState(contentBrowseItems: ContentBrowseItem[]): wemQ.Promise<any> {
@@ -233,6 +253,7 @@ export class ContentTreeGridActions implements TreeGridActions<ContentSummaryAnd
 
                 if (!canDelete) {
                     this.DELETE_CONTENT.setEnabled(false);
+                    this.CONFIRM_DELETE_CONTENT.setVisible(false);
                     this.MOVE_CONTENT.setEnabled(false);
                 }
 
