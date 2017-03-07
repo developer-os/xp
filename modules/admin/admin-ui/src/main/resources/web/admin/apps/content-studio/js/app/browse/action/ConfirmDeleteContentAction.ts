@@ -6,7 +6,7 @@ export class ConfirmDeleteContentAction extends DeleteContentAction {
 
     constructor(grid: ContentTreeGrid) {
         super(grid);
-        this.setLabel('Confirm Delete');
+        this.setLabel('Confirm Delete...');
         this.setEnabled(true);
         this.setVisible(false);
     }

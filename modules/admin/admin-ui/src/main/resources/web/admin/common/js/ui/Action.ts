@@ -243,7 +243,6 @@ module api.ui {
             });
         }
 
-
         onStateChange(listener: (action: Action) => void) {
             this.stateChangeListeners.push(listener);
         }
@@ -259,7 +258,6 @@ module api.ui {
                 listener(this);
             });
         }
-
 
         clearListeners() {
             this.beforeExecuteListeners = [];

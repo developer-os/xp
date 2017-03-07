@@ -10,6 +10,7 @@ import {FloatingDetailsPanel} from '../view/detail/FloatingDetailsPanel';
 import {DockedDetailsPanel} from '../view/detail/DockedDetailsPanel';
 import {DetailsView} from '../view/detail/DetailsView';
 import {NonMobileDetailsPanelsManager, NonMobileDetailsPanelsManagerBuilder} from '../view/detail/NonMobileDetailsPanelsManager';
+import {ContentDeleteActionButton} from '../view/ContentDeleteActionButton';
 import {Router} from '../Router';
 import {ActiveDetailsPanelManager} from '../view/detail/ActiveDetailsPanelManager';
 import {ContentBrowseItem} from './ContentBrowseItem';
@@ -134,16 +135,16 @@ export class ContentBrowsePanel extends api.app.browse.BrowsePanel<ContentSummar
             });
 
             let contentPublishMenuButton = new ContentPublishMenuButton(this.getBrowseActions());
-            let contentDeleteButton = new ActionButton(this.getBrowseActions().CONFIRM_DELETE_CONTENT);
-            contentDeleteButton.addClass('content-delete-button');
-            contentDeleteButton.setVisible(false);
+            let contentDeleteButton = new ContentDeleteActionButton(this.getBrowseActions().CONFIRM_DELETE_CONTENT);
 
             this.browseToolbar.appendChild(contentPublishMenuButton);
             this.browseToolbar.appendChild(contentDeleteButton);
             this.browseToolbar.appendChild(nonMobileDetailsPanelsManager.getToggleButton());
 
-            contentDeleteButton.getAction().onStateChange((action: Action) => contentPublishMenuButton.setVisible(!contentDeleteButton.isVisible()));
-            
+            contentDeleteButton.getAction().onStateChange(
+                (action: Action) => contentPublishMenuButton.setVisible(!contentDeleteButton.isVisible())
+            );
+
             this.subscribeDetailsPanelsOnEvents(nonMobileDetailsPanelsManager, contentPublishMenuButton);
 
             return rendered;
@@ -157,7 +158,7 @@ export class ContentBrowsePanel extends api.app.browse.BrowsePanel<ContentSummar
         let item = this.getFirstSelectedOrHighlightedBrowseItem(selection);
         this.doUpdateDetailsPanel(item ? item.getModel() : null);
     }
-    
+
     private subscribeDetailsPanelsOnEvents(nonMobileDetailsPanelsManager: NonMobileDetailsPanelsManager,
                                            contentPublishMenuButton: ContentPublishMenuButton) {
 

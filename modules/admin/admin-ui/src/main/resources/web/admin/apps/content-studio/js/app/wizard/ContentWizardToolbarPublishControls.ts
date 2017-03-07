@@ -1,4 +1,6 @@
 import '../../api.ts';
+import {ContentWizardToolbarParams} from './ContentWizardToolbar';
+import {ContentDeleteActionButton} from '../view/ContentDeleteActionButton';
 
 import Action = api.ui.Action;
 import DialogButton = api.ui.dialog.DialogButton;
@@ -22,26 +24,30 @@ export class ContentWizardToolbarPublishControls extends api.dom.DivEl {
     private contentCompareStatus: CompareStatus;
     private publishStatus: PublishStatus;
     private publishButtonForMobile: ActionButton;
+    private contentDeleteButton: ContentDeleteActionButton;
 
-    constructor(publish: Action, publishTree: Action, unpublish: Action, publishMobile: Action) {
+    constructor(actions: ContentWizardToolbarParams) {
         super('toolbar-publish-controls');
 
-        this.publishAction = publish;
+        this.publishAction = actions.publishAction;
         this.publishAction.setIconClass('publish-action');
-        this.publishTreeAction = publishTree;
-        this.unpublishAction = unpublish;
-        this.publishMobileAction = publishMobile;
+        this.publishTreeAction = actions.publishTreeAction;
+        this.unpublishAction = actions.unpublishAction;
+        this.publishMobileAction = actions.publishMobileAction;
 
-        this.publishButton = new MenuButton(publish, [publishTree, unpublish]);
+        this.publishButton = new MenuButton(this.publishAction, [this.publishTreeAction, this.unpublishAction]);
         this.publishButton.addClass('content-wizard-toolbar-publish-button');
 
         this.contentStateSpan = new SpanEl('content-status');
 
-        this.publishButtonForMobile = new ActionButton(publishMobile);
+        this.publishButtonForMobile = new ActionButton(this.publishMobileAction);
         this.publishButtonForMobile.addClass('mobile-edit-publish-button');
         this.publishButtonForMobile.setVisible(false);
 
-        this.appendChildren(this.contentStateSpan, this.publishButton);
+        this.contentDeleteButton = new ContentDeleteActionButton(actions.deleteAction);
+        this.contentDeleteButton.setLabel('Confirm Delete...');
+
+        this.appendChildren(this.contentStateSpan, this.publishButton, this.contentDeleteButton);
     }
 
     public setCompareStatus(compareStatus: CompareStatus, refresh: boolean = true): ContentWizardToolbarPublishControls {
@@ -99,6 +105,9 @@ export class ContentWizardToolbarPublishControls extends api.dom.DivEl {
         this.contentStateSpan.setHtml(this.getContentStateValueForSpan(this.contentCompareStatus, this.publishStatus), false);
         this.publishButtonForMobile.setLabel('Publish ' + api.content.CompareStatusFormatter.formatStatus(this.contentCompareStatus) +
                                              ' item');
+
+        this.publishButton.setVisible(!this.isPendingDelete());
+        this.contentDeleteButton.setVisible(this.isPendingDelete());
     }
 
     public isOnline(): boolean {

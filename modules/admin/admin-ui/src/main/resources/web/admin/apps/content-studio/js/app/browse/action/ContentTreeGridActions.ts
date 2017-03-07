@@ -90,9 +90,14 @@ export class ContentTreeGridActions implements TreeGridActions<ContentSummaryAnd
     // tslint:disable-next-line:max-line-length
     updateActionsEnabledState(contentBrowseItems: ContentBrowseItem[], changes?: BrowseItemsChanges<ContentSummaryAndCompareStatus>): wemQ.Promise<BrowseItem<ContentSummaryAndCompareStatus>[]> {
 
-        this.TOGGLE_SEARCH_PANEL.setVisible(false);
-
         let deferred = wemQ.defer<ContentBrowseItem[]>();
+
+        if (!!changes && changes.getAdded().length == 0 && changes.getRemoved().length == 0) {
+            deferred.resolve(contentBrowseItems);
+            return deferred.promise;
+        }
+
+        this.TOGGLE_SEARCH_PANEL.setVisible(false);
 
         let parallelPromises: wemQ.Promise<any>[] = [
             this.getPreviewHandler().updateState(contentBrowseItems, changes),
