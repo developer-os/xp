@@ -69,7 +69,8 @@ export class ContentTreeGridActions implements TreeGridActions<ContentSummaryAnd
             this.SHOW_NEW_CONTENT_DIALOG_ACTION,
             this.EDIT_CONTENT, this.DELETE_CONTENT,
             this.DUPLICATE_CONTENT, this.MOVE_CONTENT,
-            this.SORT_CONTENT, this.PREVIEW_CONTENT
+            this.SORT_CONTENT, this.PREVIEW_CONTENT,
+            this.UNDO_PENDING_DELETE
         );
 
         this.getPreviewHandler().onPreviewStateChanged((value) => {
@@ -82,8 +83,12 @@ export class ContentTreeGridActions implements TreeGridActions<ContentSummaryAnd
         return (<PreviewContentAction>this.PREVIEW_CONTENT).getPreviewHandler();
     }
 
+    private getDefaultVisibleActions(): api.ui.Action[] {
+        return this.actions.filter(action => action !== this.UNDO_PENDING_DELETE).concat(this.PUBLISH_CONTENT);
+    }
+
     getAllActions(): api.ui.Action[] {
-        return [...this.actions, this.PUBLISH_CONTENT, this.UNPUBLISH_CONTENT, this.UNDO_PENDING_DELETE];
+        return [...this.actions, this.PUBLISH_CONTENT, this.UNPUBLISH_CONTENT];
     }
 
     getAllActionsNoPublish(): api.ui.Action[] {
@@ -120,17 +125,23 @@ export class ContentTreeGridActions implements TreeGridActions<ContentSummaryAnd
         this.SHOW_NEW_CONTENT_DIALOG_ACTION.setEnabled(true);
         this.EDIT_CONTENT.setEnabled(false);
         this.DELETE_CONTENT.setEnabled(false);
-        this.CONFIRM_DELETE_CONTENT.setVisible(false);
         this.DUPLICATE_CONTENT.setEnabled(false);
         this.MOVE_CONTENT.setEnabled(false);
         this.SORT_CONTENT.setEnabled(false);
-        this.UNDO_PENDING_DELETE.setEnabled(false);
 
         this.PUBLISH_TREE_CONTENT.setEnabled(false);
         this.PUBLISH_CONTENT.setEnabled(false);
-        this.PUBLISH_CONTENT.setVisible(true);
         this.UNPUBLISH_CONTENT.setEnabled(false);
+
         this.UNPUBLISH_CONTENT.setVisible(false);
+        this.UNDO_PENDING_DELETE.setVisible(false);
+        this.CONFIRM_DELETE_CONTENT.setVisible(false);
+
+        this.showDefaultActions();
+    }
+
+    private showDefaultActions() {
+        this.getDefaultVisibleActions().forEach(action => action.setVisible(true));
     }
 
     private resetDefaultActionsMultipleItemsSelected(contentBrowseItems: ContentBrowseItem[]) {
@@ -169,16 +180,12 @@ export class ContentTreeGridActions implements TreeGridActions<ContentSummaryAnd
             unpublishEnabled = someArePublished;
         }
 
-        let undoDeleteEnabled = contentBrowseItems.length === 1 &&
-                                contentBrowseItems[0].getModel().getCompareStatus() === api.content.CompareStatus.PENDING_DELETE;
-
         this.SHOW_NEW_CONTENT_DIALOG_ACTION.setEnabled(contentSummaries.length < 2);
         this.EDIT_CONTENT.setEnabled(this.anyEditable(contentSummaries));
         this.DELETE_CONTENT.setEnabled(this.anyDeletable(contentSummaries));
         this.DUPLICATE_CONTENT.setEnabled(contentSummaries.length === 1);
         this.MOVE_CONTENT.setEnabled(true);
         this.SORT_CONTENT.setEnabled(contentSummaries.length === 1 && contentSummaries[0].hasChildren());
-        this.UNDO_PENDING_DELETE.setEnabled(undoDeleteEnabled);
 
         this.PUBLISH_CONTENT.setEnabled(publishEnabled);
         this.PUBLISH_TREE_CONTENT.setEnabled(treePublishEnabled);
@@ -192,12 +199,13 @@ export class ContentTreeGridActions implements TreeGridActions<ContentSummaryAnd
         this.DELETE_CONTENT.setVisible(!allArePendingDelete);
 
         if (allArePendingDelete) {
-            this.PUBLISH_CONTENT.setVisible(false);
-            this.UNPUBLISH_CONTENT.setVisible(false);
+            this.getAllActions().forEach(action => action.setVisible(false));
         } else {
+            this.getAllActionsNoPublish().forEach(action => action.setVisible(true));
             this.PUBLISH_CONTENT.setVisible(publishEnabled);
             this.UNPUBLISH_CONTENT.setVisible(unpublishEnabled);
         }
+        this.UNDO_PENDING_DELETE.setVisible(allArePendingDelete);
     }
 
     private isEveryLeaf(contentSummaries: ContentSummary[]): boolean {
