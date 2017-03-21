@@ -5,7 +5,6 @@ import java.util.Hashtable;
 
 import javax.servlet.ServletContext;
 
-import org.apache.felix.http.base.internal.AbstractHttpActivator;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceFactory;
@@ -13,10 +12,12 @@ import org.osgi.framework.ServiceRegistration;
 import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Deactivate;
+import org.osgi.service.component.annotations.Reference;
+
+import com.enonic.xp.web.jetty.impl.dispatch.DispatchServlet;
 
 @Component(immediate = true, service = JettyController.class, configurationPid = "com.enonic.xp.web.jetty")
 public final class JettyActivator
-    extends AbstractHttpActivator
     implements JettyController
 {
     private BundleContext context;
@@ -28,6 +29,8 @@ public final class JettyActivator
     private ServiceRegistration controllerReg;
 
     private ServiceRegistration servletContextReg;
+
+    private DispatchServlet dispatchServlet;
 
     public JettyActivator()
     {
@@ -45,20 +48,10 @@ public final class JettyActivator
         this.service = new JettyService();
         this.service.config = this.config;
 
-        start( this.context );
-    }
-
-    @Override
-    protected void doStart()
-        throws Exception
-    {
-        super.doStart();
         publishController();
         publishServletContext();
 
-        this.service.dispatcherServlet = getDispatcherServlet();
-        this.service.eventDispatcher = getEventDispatcher();
-
+        this.service.dispatcherServlet = this.dispatchServlet;
         this.service.start();
     }
 
@@ -70,7 +63,6 @@ public final class JettyActivator
         this.servletContextReg.unregister();
 
         this.service.stop();
-        stop( this.context );
     }
 
     private void fixJettyVersion()
@@ -117,5 +109,11 @@ public final class JettyActivator
                 // Do nothing
             }
         }, map );
+    }
+
+    @Reference
+    public void setDispatchServlet( final DispatchServlet dispatchServlet )
+    {
+        this.dispatchServlet = dispatchServlet;
     }
 }
