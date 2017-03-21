@@ -6,7 +6,9 @@ import java.util.Hashtable;
 import javax.servlet.ServletContext;
 
 import org.apache.felix.http.base.internal.AbstractHttpActivator;
+import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
+import org.osgi.framework.ServiceFactory;
 import org.osgi.framework.ServiceRegistration;
 import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
@@ -24,6 +26,8 @@ public final class JettyActivator
     private JettyConfig config;
 
     private ServiceRegistration controllerReg;
+
+    private ServiceRegistration servletContextReg;
 
     public JettyActivator()
     {
@@ -50,6 +54,7 @@ public final class JettyActivator
     {
         super.doStart();
         publishController();
+        publishServletContext();
 
         this.service.dispatcherServlet = getDispatcherServlet();
         this.service.eventDispatcher = getEventDispatcher();
@@ -62,6 +67,8 @@ public final class JettyActivator
         throws Exception
     {
         this.controllerReg.unregister();
+        this.servletContextReg.unregister();
+
         this.service.stop();
         stop( this.context );
     }
@@ -90,5 +97,25 @@ public final class JettyActivator
         map.put( "http.port", this.config.http_port() );
 
         this.controllerReg = this.context.registerService( JettyController.class, this, map );
+    }
+
+    private void publishServletContext()
+    {
+        final Hashtable<String, Object> map = new Hashtable<>();
+        this.servletContextReg = this.context.registerService( ServletContext.class, new ServiceFactory<ServletContext>()
+        {
+            @Override
+            public ServletContext getService( final Bundle bundle, final ServiceRegistration<ServletContext> registration )
+            {
+                return getServletContext();
+            }
+
+            @Override
+            public void ungetService( final Bundle bundle, final ServiceRegistration<ServletContext> registration,
+                                      final ServletContext service )
+            {
+                // Do nothing
+            }
+        }, map );
     }
 }
