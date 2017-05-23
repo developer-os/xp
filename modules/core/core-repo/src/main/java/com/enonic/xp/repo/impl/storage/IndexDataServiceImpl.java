@@ -1,10 +1,17 @@
 package com.enonic.xp.repo.impl.storage;
 
 import java.util.Collection;
+import java.util.Set;
 
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
+import org.osgi.service.component.annotations.ReferenceCardinality;
+import org.osgi.service.component.annotations.ReferencePolicy;
 
+import com.google.common.collect.Sets;
+
+import com.enonic.xp.index.IndexConfigDocument;
+import com.enonic.xp.index.IndexConfigDocumentFactory;
 import com.enonic.xp.node.Node;
 import com.enonic.xp.node.NodeId;
 import com.enonic.xp.node.NodeIds;
@@ -22,6 +29,8 @@ public class IndexDataServiceImpl
     implements IndexDataService
 {
     private StorageDao storageDao;
+
+    private final Set<IndexConfigDocumentFactory> indexConfigFactories = Sets.newHashSet();
 
     @Override
     public ReturnValues get( final NodeId nodeId, final ReturnFields returnFields, final InternalContext context )
@@ -98,10 +107,26 @@ public class IndexDataServiceImpl
     @Override
     public void store( final Node node, final InternalContext context )
     {
+        IndexConfigDocument indexConfigDocument = null;
+
+        for ( final IndexConfigDocumentFactory factory : indexConfigFactories )
+        {
+            if ( factory.supports( node ) )
+            {
+                indexConfigDocument = factory.create( node );
+            }
+        }
+
+        if ( indexConfigDocument == null )
+        {
+            throw new RuntimeException( "Could not find indexConfigFactory for node" );
+        }
+
         final Collection<IndexDocument> indexDocuments = NodeStoreDocumentFactory.createBuilder().
             node( node ).
             branch( context.getBranch() ).
             repositoryId( context.getRepositoryId() ).
+            indexConfigDocument( indexConfigDocument ).
             build().
             create();
 
@@ -129,4 +154,13 @@ public class IndexDataServiceImpl
     {
         this.storageDao = storageDao;
     }
+
+
+    @Reference(cardinality = ReferenceCardinality.MULTIPLE, policy = ReferencePolicy.DYNAMIC)
+    public void setIndexConfigFactory( final IndexConfigDocumentFactory factory )
+    {
+        this.indexConfigFactories.add( factory );
+        System.out.println( "Adding factory: " + factory.getClass().getName() );
+    }
+
 }

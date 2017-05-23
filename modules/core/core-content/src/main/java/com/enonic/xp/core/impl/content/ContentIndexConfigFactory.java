@@ -1,13 +1,13 @@
 package com.enonic.xp.core.impl.content;
 
-import com.enonic.xp.content.Content;
 import com.enonic.xp.content.ContentConstants;
-import com.enonic.xp.content.CreateContentTranslatorParams;
+import com.enonic.xp.content.ContentPropertyNames;
 import com.enonic.xp.data.PropertyPath;
 import com.enonic.xp.form.Form;
 import com.enonic.xp.index.IndexConfig;
 import com.enonic.xp.index.IndexConfigDocument;
 import com.enonic.xp.index.PatternIndexConfigDocument;
+import com.enonic.xp.node.Node;
 import com.enonic.xp.schema.content.ContentTypeName;
 import com.enonic.xp.schema.content.ContentTypeService;
 import com.enonic.xp.schema.content.GetContentTypeParams;
@@ -28,21 +28,16 @@ import static com.enonic.xp.content.ContentPropertyNames.SITE;
 import static com.enonic.xp.content.ContentPropertyNames.SITECONFIG;
 import static com.enonic.xp.content.ContentPropertyNames.TYPE;
 
-class ContentIndexConfigFactory
+public class ContentIndexConfigFactory
 {
+    private final ContentTypeService contentTypeService;
 
-
-    public static IndexConfigDocument create( final CreateContentTranslatorParams params, final ContentTypeService contentTypeService )
+    public ContentIndexConfigFactory( final ContentTypeService contentTypeService )
     {
-        return doCreateIndexConfig( getForm( contentTypeService, params.getType() ), params.getType() );
+        this.contentTypeService = contentTypeService;
     }
 
-    public static IndexConfigDocument create( final Content content, final ContentTypeService contentTypeService )
-    {
-        return doCreateIndexConfig( getForm( contentTypeService, content.getType() ), content.getType() );
-    }
-
-    private static IndexConfigDocument doCreateIndexConfig( final Form form, final ContentTypeName contentTypeName )
+    public IndexConfigDocument create( final Node node )
     {
         final PatternIndexConfigDocument.Builder configDocumentBuilder = PatternIndexConfigDocument.create().
             analyzer( ContentConstants.DOCUMENT_INDEX_DEFAULT_ANALYZER ).
@@ -62,7 +57,12 @@ class ContentIndexConfigFactory
             add( PropertyPath.from( EXTRA_DATA ), IndexConfig.MINIMAL ).
             defaultConfig( IndexConfig.BY_TYPE );
 
+        final String contentTypeNameString = node.data().getString( ContentPropertyNames.TYPE );
+        final ContentTypeName contentTypeName = ContentTypeName.from( contentTypeNameString );
+
         addAttachmentTextMapping( contentTypeName, configDocumentBuilder );
+
+        final Form form = getForm( contentTypeName );
 
         final IndexConfigVisitor indexConfigVisitor = new IndexConfigVisitor( DATA, configDocumentBuilder );
         indexConfigVisitor.traverse( form );
@@ -70,8 +70,8 @@ class ContentIndexConfigFactory
         return configDocumentBuilder.build();
     }
 
-    private static void addAttachmentTextMapping( final ContentTypeName contentTypeName,
-                                                  final PatternIndexConfigDocument.Builder configDocumentBuilder )
+    private void addAttachmentTextMapping( final ContentTypeName contentTypeName,
+                                           final PatternIndexConfigDocument.Builder configDocumentBuilder )
     {
         if ( contentTypeName.isTextualMedia() )
         {
@@ -95,8 +95,9 @@ class ContentIndexConfigFactory
         }
     }
 
-    private static Form getForm( final ContentTypeService contentTypeService, final ContentTypeName contentTypeName )
+    private Form getForm( final ContentTypeName contentTypeName )
     {
-        return contentTypeService.getByName( new GetContentTypeParams().contentTypeName( contentTypeName ) ).getForm();
+        return this.contentTypeService.getByName( new GetContentTypeParams().contentTypeName( contentTypeName ) ).getForm();
     }
+
 }

@@ -25,6 +25,8 @@ public class NodeStoreDocumentFactory
 {
     private final Node node;
 
+    private final IndexConfigDocument indexConfigDocument;
+
     private final Branch branch;
 
     private final RepositoryId repositoryId;
@@ -33,10 +35,11 @@ public class NodeStoreDocumentFactory
 
     private NodeStoreDocumentFactory( final Builder builder )
     {
-        node = builder.node;
-        branch = builder.branch;
-        repositoryId = builder.repositoryId;
+        this.node = builder.node;
+        this.branch = builder.branch;
+        this.repositoryId = builder.repositoryId;
         this.refresh = builder.refresh;
+        this.indexConfigDocument = builder.indexConfigDocument;
     }
 
     public static Builder createBuilder()
@@ -57,8 +60,6 @@ public class NodeStoreDocumentFactory
 
     private IndexDocument createDataDocument()
     {
-        final IndexConfigDocument indexConfigDocument = this.node.getIndexConfigDocument();
-
         final IndexDocument.Builder builder = IndexDocument.create().
             id( this.node.id().toString() ).
             indexName( IndexNameResolver.resolveSearchIndexName( this.repositoryId ) ).
@@ -208,6 +209,8 @@ public class NodeStoreDocumentFactory
     {
         private Node node;
 
+        private IndexConfigDocument indexConfigDocument;
+
         private Branch branch;
 
         private RepositoryId repositoryId;
@@ -224,6 +227,12 @@ public class NodeStoreDocumentFactory
             return this;
         }
 
+        public Builder indexConfigDocument( final IndexConfigDocument val )
+        {
+            indexConfigDocument = val;
+            return this;
+        }
+
         public Builder branch( Branch branch )
         {
             this.branch = branch;
@@ -233,6 +242,12 @@ public class NodeStoreDocumentFactory
         public Builder repositoryId( RepositoryId repositoryId )
         {
             this.repositoryId = repositoryId;
+            return this;
+        }
+
+        public Builder refresh( final boolean val )
+        {
+            refresh = val;
             return this;
         }
 

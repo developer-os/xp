@@ -22,7 +22,7 @@ import com.enonic.xp.node.NodeIdExistsException;
 import com.enonic.xp.node.NodeName;
 import com.enonic.xp.node.NodeNotFoundException;
 import com.enonic.xp.node.NodePath;
-import com.enonic.xp.node.NodeType;
+import com.enonic.xp.node.NodeTypeOld;
 import com.enonic.xp.repo.impl.binary.BinaryService;
 import com.enonic.xp.security.PrincipalKey;
 import com.enonic.xp.security.acl.AccessControlList;
@@ -86,12 +86,11 @@ public final class CreateNodeCommand
             parentPath( params.getParent() ).
             name( NodeName.from( params.getName() ) ).
             data( params.getData() ).
-            indexConfigDocument( params.getIndexConfigDocument() ).
             childOrder( params.getChildOrder() != null ? params.getChildOrder() : ChildOrder.defaultOrder() ).
             manualOrderValue( manualOrderValue ).
             permissions( permissions ).
             inheritPermissions( params.inheritPermissions() ).
-            nodeType( params.getNodeType() != null ? params.getNodeType() : NodeType.DEFAULT_NODE_COLLECTION ).
+            nodeType( params.getNodeType() != null ? params.getNodeType() : NodeTypeOld.DEFAULT_NODE_COLLECTION ).
             attachedBinaries( attachedBinaries ).
             timestamp( this.timestamp != null ? this.timestamp : Instant.now() );
 

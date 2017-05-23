@@ -49,10 +49,6 @@ public class FindNodesByQueryCommandTest_arrays
             name( "my-node-1" ).
             parent( NodePath.ROOT ).
             data( data ).
-            indexConfigDocument( PatternIndexConfigDocument.create().
-                analyzer( NodeConstants.DOCUMENT_INDEX_DEFAULT_ANALYZER ).
-                defaultConfig( IndexConfig.BY_TYPE ).
-                build() ).
             build() );
 
         printContentRepoIndex();

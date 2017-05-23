@@ -7,7 +7,7 @@ import com.enonic.xp.index.ChildOrder;
 import com.enonic.xp.lib.value.ScriptValueTranslatorResult;
 import com.enonic.xp.node.BinaryAttachments;
 import com.enonic.xp.node.CreateNodeParams;
-import com.enonic.xp.node.NodeType;
+import com.enonic.xp.node.NodeTypeOld;
 
 import static com.enonic.xp.lib.node.NodePropertyConstants.CHILD_ORDER;
 import static com.enonic.xp.lib.node.NodePropertyConstants.MANUAL_ORDER_VALUE;
@@ -57,7 +57,7 @@ public class CreateNodeParamsFactoryTest
         throws Exception
     {
         final CreateNodeParams createNodeParams = createWithStringProperty( NODE_TYPE, "myNodeType" );
-        assertEquals( NodeType.from( "myNodeType" ), createNodeParams.getNodeType() );
+        assertEquals( NodeTypeOld.from( "myNodeType" ), createNodeParams.getNodeType() );
     }
 
     private CreateNodeParams createWithStringProperty( final String nodeName, final String myNode )

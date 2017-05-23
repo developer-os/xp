@@ -310,6 +310,9 @@ public class NodeStorageServiceImpl
 
     private void indexNode( final Node node, final NodeVersionId nodeVersionId, final InternalContext context )
     {
+
+
+
         this.indexDataService.store( Node.create( node ).
             nodeVersionId( nodeVersionId ).
             build(), context );

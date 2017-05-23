@@ -10,10 +10,9 @@ import com.enonic.xp.node.BinaryAttachments;
 import com.enonic.xp.node.CreateNodeParams;
 import com.enonic.xp.node.NodeId;
 import com.enonic.xp.node.NodePath;
-import com.enonic.xp.node.NodeType;
+import com.enonic.xp.node.NodeTypeOld;
 
 import static com.enonic.xp.lib.node.NodePropertyConstants.CHILD_ORDER;
-import static com.enonic.xp.lib.node.NodePropertyConstants.INDEX_CONFIG;
 import static com.enonic.xp.lib.node.NodePropertyConstants.MANUAL_ORDER_VALUE;
 import static com.enonic.xp.lib.node.NodePropertyConstants.NODE_NAME;
 import static com.enonic.xp.lib.node.NodePropertyConstants.NODE_TYPE;
@@ -40,7 +39,6 @@ class CreateNodeParamsFactory
         final String childOrder = properties.getString( CHILD_ORDER );
         final String nodeType = properties.getString( NODE_TYPE );
         final Iterable<PropertySet> permissions = properties.getSets( PERMISSIONS );
-        final PropertySet indexConfig = properties.getSet( INDEX_CONFIG );
 
         final CreateNodeParams.Builder builder = CreateNodeParams.create();
         setName( name, builder );
@@ -50,8 +48,7 @@ class CreateNodeParamsFactory
             parent( Strings.isNullOrEmpty( parentPath ) ? NodePath.ROOT : NodePath.create( parentPath ).build() ).
             manualOrderValue( manualOrderValue ).
             childOrder( ChildOrder.from( childOrder ) ).
-            nodeType( Strings.isNullOrEmpty( nodeType ) ? NodeType.DEFAULT_NODE_COLLECTION : NodeType.from( nodeType ) ).
-            indexConfigDocument( new IndexConfigFactory( indexConfig ).create() ).
+            nodeType( Strings.isNullOrEmpty( nodeType ) ? NodeTypeOld.DEFAULT_NODE_COLLECTION : NodeTypeOld.from( nodeType ) ).
             permissions( new PermissionsFactory( permissions ).create() ).
             setBinaryAttachments( createAttachments ).
             build();

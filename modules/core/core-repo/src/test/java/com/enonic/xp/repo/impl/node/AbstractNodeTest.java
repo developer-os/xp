@@ -9,14 +9,12 @@ import org.mockito.Mockito;
 
 import com.enonic.xp.blob.BlobStore;
 import com.enonic.xp.branch.Branch;
-import com.enonic.xp.content.ContentConstants;
 import com.enonic.xp.context.Context;
 import com.enonic.xp.context.ContextAccessor;
 import com.enonic.xp.context.ContextBuilder;
 import com.enonic.xp.data.PropertyTree;
 import com.enonic.xp.event.EventPublisher;
 import com.enonic.xp.index.IndexType;
-import com.enonic.xp.index.PatternIndexConfigDocument;
 import com.enonic.xp.internal.blobstore.MemoryBlobStore;
 import com.enonic.xp.node.CreateNodeParams;
 import com.enonic.xp.node.CreateRootNodeParams;
@@ -41,6 +39,7 @@ import com.enonic.xp.repo.impl.elasticsearch.IndexServiceInternalImpl;
 import com.enonic.xp.repo.impl.elasticsearch.search.SearchDaoImpl;
 import com.enonic.xp.repo.impl.elasticsearch.snapshot.SnapshotServiceImpl;
 import com.enonic.xp.repo.impl.elasticsearch.storage.StorageDaoImpl;
+import com.enonic.xp.repo.impl.index.DefaultNodeIndexDocumentFactory;
 import com.enonic.xp.repo.impl.node.dao.NodeVersionServiceImpl;
 import com.enonic.xp.repo.impl.repository.IndexNameResolver;
 import com.enonic.xp.repo.impl.repository.NodeRepositoryServiceImpl;
@@ -168,6 +167,7 @@ public abstract class AbstractNodeTest
 
         this.indexedDataService = new IndexDataServiceImpl();
         this.indexedDataService.setStorageDao( storageDao );
+        this.indexedDataService.setIndexConfigFactory( new DefaultNodeIndexDocumentFactory() );
 
         this.storageService = new NodeStorageServiceImpl();
         this.storageService.setVersionService( this.versionService );
@@ -298,9 +298,6 @@ public abstract class AbstractNodeTest
     protected Node createNode( final CreateNodeParams createNodeParams, final boolean refresh )
     {
         final CreateNodeParams createParamsWithAnalyzer = CreateNodeParams.create( createNodeParams ).
-            indexConfigDocument( PatternIndexConfigDocument.create().
-                analyzer( ContentConstants.DOCUMENT_INDEX_DEFAULT_ANALYZER ).
-                build() ).
             build();
 
         final Node createdNode = CreateNodeCommand.create().

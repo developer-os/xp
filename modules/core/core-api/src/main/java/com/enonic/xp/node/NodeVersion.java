@@ -16,7 +16,7 @@ public class NodeVersion
 
     private final NodeVersionId versionId;
 
-    private final NodeType nodeType;
+    private final NodeTypeOld nodeType;
 
     private final Instant timestamp;
 
@@ -76,7 +76,7 @@ public class NodeVersion
         return versionId;
     }
 
-    public NodeType getNodeType()
+    public NodeTypeOld getNodeType()
     {
         return nodeType;
     }
@@ -138,7 +138,7 @@ public class NodeVersion
 
         private NodeVersionId versionId;
 
-        private NodeType nodeType = NodeType.DEFAULT_NODE_COLLECTION;
+        private NodeTypeOld nodeType = NodeTypeOld.DEFAULT_NODE_COLLECTION;
 
         private Instant timestamp = Instant.now();
 
@@ -187,7 +187,7 @@ public class NodeVersion
             return this;
         }
 
-        public Builder nodeType( NodeType nodeType )
+        public Builder nodeType( NodeTypeOld nodeType )
         {
             this.nodeType = nodeType;
             return this;

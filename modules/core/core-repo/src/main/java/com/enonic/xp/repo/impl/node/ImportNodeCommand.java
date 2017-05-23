@@ -89,7 +89,6 @@ public class ImportNodeCommand
                 childOrder( this.importNode.getChildOrder() ).
                 setBinaryAttachments( this.binaryAttachments ).
                 data( this.importNode.data() ).
-                indexConfigDocument( this.importNode.getIndexConfigDocument() ).
                 insertManualStrategy( this.insertManualStrategy ).
                 manualOrderValue( this.importNode.getManualOrderValue() ).
                 name( this.importNode.name().toString() ).

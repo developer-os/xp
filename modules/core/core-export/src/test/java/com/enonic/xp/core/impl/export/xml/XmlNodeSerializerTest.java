@@ -19,7 +19,7 @@ import com.enonic.xp.node.Node;
 import com.enonic.xp.node.NodeId;
 import com.enonic.xp.node.NodeName;
 import com.enonic.xp.node.NodePath;
-import com.enonic.xp.node.NodeType;
+import com.enonic.xp.node.NodeTypeOld;
 import com.enonic.xp.security.PrincipalKey;
 import com.enonic.xp.security.acl.AccessControlEntry;
 import com.enonic.xp.security.acl.AccessControlList;
@@ -135,7 +135,7 @@ public class XmlNodeSerializerTest
             name( NodeName.from( "my-node-name" ) ).
             parentPath( NodePath.ROOT ).
             childOrder( ChildOrder.manualOrder() ).
-            nodeType( NodeType.from( "content" ) ).
+            nodeType( NodeTypeOld.from( "content" ) ).
             data( propertyTree ).
             indexConfigDocument( indexConfigDocumentBuilder.build() ).
             permissions( accessControlList ).

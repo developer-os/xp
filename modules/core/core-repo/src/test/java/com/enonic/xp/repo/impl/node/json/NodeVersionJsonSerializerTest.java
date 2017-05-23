@@ -19,7 +19,7 @@ import com.enonic.xp.index.PatternIndexConfigDocument;
 import com.enonic.xp.node.AttachedBinaries;
 import com.enonic.xp.node.AttachedBinary;
 import com.enonic.xp.node.NodeId;
-import com.enonic.xp.node.NodeType;
+import com.enonic.xp.node.NodeTypeOld;
 import com.enonic.xp.node.NodeVersion;
 import com.enonic.xp.query.expr.FieldOrderExpr;
 import com.enonic.xp.query.expr.OrderExpr;
@@ -103,7 +103,7 @@ public class NodeVersionJsonSerializerTest
                 add( FieldOrderExpr.create( IndexPath.from( "displayName" ), OrderExpr.Direction.DESC ) ).
                 build() ).
             permissions( acl ).
-            nodeType( NodeType.from( "myNodeType" ) ).
+            nodeType( NodeTypeOld.from( "myNodeType" ) ).
             attachedBinaries( AttachedBinaries.create().
                 add( new AttachedBinary( BinaryReference.from( "myImage1" ), "a" ) ).
                 add( new AttachedBinary( BinaryReference.from( "myImage2" ), "b" ) ).

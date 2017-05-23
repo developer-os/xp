@@ -10,7 +10,6 @@ import com.google.common.io.ByteSource;
 
 import com.enonic.xp.data.PropertyTree;
 import com.enonic.xp.index.ChildOrder;
-import com.enonic.xp.index.IndexConfigDocument;
 import com.enonic.xp.security.acl.AccessControlList;
 import com.enonic.xp.util.BinaryReference;
 
@@ -22,8 +21,6 @@ public class CreateNodeParams
     private final String name;
 
     private final PropertyTree data;
-
-    private final IndexConfigDocument indexConfigDocument;
 
     private final ChildOrder childOrder;
 
@@ -37,7 +34,7 @@ public class CreateNodeParams
 
     private final InsertManualStrategy insertManualStrategy;
 
-    private final NodeType nodeType;
+    private final NodeTypeOld nodeType;
 
     private final BinaryAttachments binaryAttachments;
 
@@ -46,7 +43,6 @@ public class CreateNodeParams
         this.parent = builder.parent;
         this.name = builder.name;
         this.data = builder.data;
-        this.indexConfigDocument = builder.indexConfigDocument;
         this.childOrder = builder.childOrder;
         this.nodeId = builder.nodeId;
         this.permissions = builder.permissions;
@@ -73,7 +69,6 @@ public class CreateNodeParams
             parent( node.parentPath() ).
             name( node.name().toString() ).
             data( node.data() ).
-            indexConfigDocument( node.getIndexConfigDocument() ).
             childOrder( node.getChildOrder() ).
             permissions( node.getPermissions() ).
             inheritPermissions( node.inheritsPermissions() ).
@@ -93,11 +88,6 @@ public class CreateNodeParams
     public PropertyTree getData()
     {
         return data;
-    }
-
-    public IndexConfigDocument getIndexConfigDocument()
-    {
-        return indexConfigDocument;
     }
 
     public ChildOrder getChildOrder()
@@ -135,7 +125,7 @@ public class CreateNodeParams
         return inheritPermissions;
     }
 
-    public NodeType getNodeType()
+    public NodeTypeOld getNodeType()
     {
         return nodeType;
     }
@@ -162,7 +152,6 @@ public class CreateNodeParams
             Objects.equals( parent, that.parent ) &&
             Objects.equals( name, that.name ) &&
             Objects.equals( data, that.data ) &&
-            Objects.equals( indexConfigDocument, that.indexConfigDocument ) &&
             Objects.equals( childOrder, that.childOrder ) &&
             Objects.equals( permissions, that.permissions ) &&
             Objects.equals( nodeType, that.nodeType ) &&
@@ -173,7 +162,7 @@ public class CreateNodeParams
     @Override
     public int hashCode()
     {
-        return Objects.hash( parent, name, data, indexConfigDocument, childOrder, nodeId, permissions, inheritPermissions, nodeType,
+        return Objects.hash( parent, name, data, childOrder, nodeId, permissions, inheritPermissions, nodeType,
                              binaryAttachments );
     }
 
@@ -184,8 +173,6 @@ public class CreateNodeParams
         private String name;
 
         private PropertyTree data = new PropertyTree();
-
-        private IndexConfigDocument indexConfigDocument;
 
         private ChildOrder childOrder;
 
@@ -199,7 +186,7 @@ public class CreateNodeParams
 
         private Long manualOrderValue;
 
-        private NodeType nodeType;
+        private NodeTypeOld nodeType;
 
         private Set<BinaryAttachment> binaryAttachments = Sets.newHashSet();
 
@@ -213,7 +200,6 @@ public class CreateNodeParams
             this.parent = createNodeParams.parent;
             this.name = createNodeParams.name;
             this.data = createNodeParams.data;
-            this.indexConfigDocument = createNodeParams.indexConfigDocument;
             this.childOrder = createNodeParams.childOrder;
             this.nodeId = createNodeParams.nodeId;
             this.permissions = createNodeParams.permissions;
@@ -248,12 +234,6 @@ public class CreateNodeParams
             return this;
         }
 
-        public Builder indexConfigDocument( final IndexConfigDocument indexConfigDocument )
-        {
-            this.indexConfigDocument = indexConfigDocument;
-            return this;
-        }
-
         public Builder childOrder( final ChildOrder childOrder )
         {
             this.childOrder = childOrder;
@@ -284,7 +264,7 @@ public class CreateNodeParams
             return this;
         }
 
-        public Builder nodeType( final NodeType nodeType )
+        public Builder nodeType( final NodeTypeOld nodeType )
         {
             this.nodeType = nodeType;
             return this;

@@ -3,8 +3,6 @@ package com.enonic.xp.repo.impl.node;
 import org.junit.Before;
 import org.junit.Test;
 
-import com.enonic.xp.index.IndexConfig;
-import com.enonic.xp.index.PatternIndexConfigDocument;
 import com.enonic.xp.node.CreateNodeParams;
 import com.enonic.xp.node.FindNodesByQueryResult;
 import com.enonic.xp.node.Node;
@@ -73,20 +71,12 @@ public class FindNodesByQueryCommandTest_acl
         final Node node = createNode( CreateNodeParams.create().
             name( "node_with_access" ).
             parent( NodePath.ROOT ).
-            indexConfigDocument( PatternIndexConfigDocument.create().
-                analyzer( NodeConstants.DOCUMENT_INDEX_DEFAULT_ANALYZER ).
-                defaultConfig( IndexConfig.BY_TYPE ).
-                build() ).
             build() );
 
         final Node nodeNodeAccess = createNode( CreateNodeParams.create().
             name( "my-node-2" ).
             parent( NodePath.ROOT ).
             permissions( denyReadForPrincipal( TEST_DEFAULT_USER.getKey() ) ).
-            indexConfigDocument( PatternIndexConfigDocument.create().
-                analyzer( NodeConstants.DOCUMENT_INDEX_DEFAULT_ANALYZER ).
-                defaultConfig( IndexConfig.BY_TYPE ).
-                build() ).
             build() );
 
         final NodeQuery query = NodeQuery.create().

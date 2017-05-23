@@ -82,10 +82,6 @@ public class FindNodesByQueryCommandTest_func_ngram
             name( "my-node-1" ).
             parent( NodePath.ROOT ).
             data( data ).
-            indexConfigDocument( PatternIndexConfigDocument.create().
-                analyzer( NodeConstants.DOCUMENT_INDEX_DEFAULT_ANALYZER ).
-                defaultConfig( IndexConfig.BY_TYPE ).
-                build() ).
             build() );
 
         queryAndAssert( node, "ngram('title', 'test', 'AND')", 1 );
@@ -103,10 +99,6 @@ public class FindNodesByQueryCommandTest_func_ngram
             name( "my-node-1" ).
             parent( NodePath.ROOT ).
             data( data ).
-            indexConfigDocument( PatternIndexConfigDocument.create().
-                analyzer( NodeConstants.DOCUMENT_INDEX_DEFAULT_ANALYZER ).
-                defaultConfig( IndexConfig.BY_TYPE ).
-                build() ).
             build() );
 
         queryAndAssert( node, "ngram('title', 'test', 'AND')", 1 );
@@ -122,10 +114,6 @@ public class FindNodesByQueryCommandTest_func_ngram
             name( "my-node-1" ).
             parent( NodePath.ROOT ).
             data( data ).
-            indexConfigDocument( PatternIndexConfigDocument.create().
-                analyzer( NodeConstants.DOCUMENT_INDEX_DEFAULT_ANALYZER ).
-                defaultConfig( IndexConfig.BY_TYPE ).
-                build() ).
             build() );
 
         final PropertyTree data2 = new PropertyTree();
@@ -135,10 +123,6 @@ public class FindNodesByQueryCommandTest_func_ngram
             name( "my-node-2" ).
             parent( NodePath.ROOT ).
             data( data2 ).
-            indexConfigDocument( PatternIndexConfigDocument.create().
-                analyzer( NodeConstants.DOCUMENT_INDEX_DEFAULT_ANALYZER ).
-                defaultConfig( IndexConfig.BY_TYPE ).
-                build() ).
             build() );
         return node;
     }

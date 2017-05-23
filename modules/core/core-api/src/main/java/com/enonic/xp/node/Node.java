@@ -24,7 +24,7 @@ public final class Node
 
     private final NodePath parentPath;
 
-    private final NodeType nodeType;
+    private final NodeTypeOld nodeType;
 
     private final NodePath path;
 
@@ -157,7 +157,7 @@ public final class Node
         return inheritPermissions;
     }
 
-    public NodeType getNodeType()
+    public NodeTypeOld getNodeType()
     {
         return nodeType;
     }
@@ -245,7 +245,7 @@ public final class Node
 
         private boolean inheritPermissions;
 
-        private NodeType nodeType = NodeType.DEFAULT_NODE_COLLECTION;
+        private NodeTypeOld nodeType = NodeTypeOld.DEFAULT_NODE_COLLECTION;
 
         private AttachedBinaries attachedBinaries = AttachedBinaries.empty();
 
@@ -353,7 +353,7 @@ public final class Node
             return this;
         }
 
-        public Builder nodeType( final NodeType nodeType )
+        public Builder nodeType( final NodeTypeOld nodeType )
         {
             this.nodeType = nodeType;
             return this;

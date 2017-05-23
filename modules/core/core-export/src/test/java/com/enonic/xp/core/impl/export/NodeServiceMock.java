@@ -418,7 +418,6 @@ class NodeServiceMock
                 setBinaryAttachments( params.getBinaryAttachments() ).
                 childOrder( importNode.getChildOrder() ).
                 data( importNode.data() ).
-                indexConfigDocument( importNode.getIndexConfigDocument() ).
                 insertManualStrategy( params.getInsertManualStrategy() ).
                 manualOrderValue( importNode.getManualOrderValue() ).
                 name( importNode.name().toString() ).

@@ -25,7 +25,7 @@ public class EditableNode
 
     public boolean inheritPermissions;
 
-    public NodeType nodeType;
+    public NodeTypeOld nodeType;
 
     public EditableNode( final Node source )
     {

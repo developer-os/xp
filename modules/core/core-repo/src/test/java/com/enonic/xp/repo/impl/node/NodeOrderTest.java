@@ -5,13 +5,11 @@ import java.util.Iterator;
 import org.junit.Before;
 import org.junit.Test;
 
-import com.enonic.xp.content.ContentConstants;
 import com.enonic.xp.context.ContextAccessor;
 import com.enonic.xp.data.PropertyTree;
 import com.enonic.xp.data.Value;
 import com.enonic.xp.data.ValueFactory;
 import com.enonic.xp.index.IndexPath;
-import com.enonic.xp.index.PatternIndexConfigDocument;
 import com.enonic.xp.node.CreateNodeParams;
 import com.enonic.xp.node.Node;
 import com.enonic.xp.node.NodeId;
@@ -111,9 +109,6 @@ public class NodeOrderTest
             parent( NodePath.ROOT ).
             data( data ).
             setNodeId( NodeId.from( name ) ).
-            indexConfigDocument( PatternIndexConfigDocument.create().
-                analyzer( ContentConstants.DOCUMENT_INDEX_DEFAULT_ANALYZER ).
-                build() ).
             build() );
     }
 

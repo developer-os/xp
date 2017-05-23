@@ -6,7 +6,7 @@ import com.enonic.xp.data.ValueType;
 import com.enonic.xp.data.ValueTypes;
 import com.enonic.xp.index.ChildOrder;
 import com.enonic.xp.node.EditableNode;
-import com.enonic.xp.node.NodeType;
+import com.enonic.xp.node.NodeTypeOld;
 
 import static com.enonic.xp.lib.node.NodePropertyConstants.CHILD_ORDER;
 import static com.enonic.xp.lib.node.NodePropertyConstants.INDEX_CONFIG;
@@ -68,7 +68,7 @@ class ModifyNodeExecutor
 
         if ( exists( propertyTree, NODE_TYPE, ValueTypes.STRING ) )
         {
-            editableNode.nodeType = NodeType.from( propertyTree.getString( NODE_TYPE ) );
+            editableNode.nodeType = NodeTypeOld.from( propertyTree.getString( NODE_TYPE ) );
         }
     }
 

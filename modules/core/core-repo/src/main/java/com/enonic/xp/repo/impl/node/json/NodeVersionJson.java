@@ -14,7 +14,7 @@ import com.enonic.xp.index.PatternIndexConfigDocument;
 import com.enonic.xp.node.AttachedBinaries;
 import com.enonic.xp.node.AttachedBinary;
 import com.enonic.xp.node.NodeId;
-import com.enonic.xp.node.NodeType;
+import com.enonic.xp.node.NodeTypeOld;
 import com.enonic.xp.node.NodeVersion;
 import com.enonic.xp.security.acl.AccessControlEntry;
 import com.enonic.xp.security.acl.AccessControlList;
@@ -61,7 +61,7 @@ final class NodeVersionJson
             manualOrderValue( this.manualOrderValue ).
             permissions( fromJson( this.permissions ) ).
             inheritPermissions( this.inheritPermissions ).
-            nodeType( NodeType.from( this.nodeType ) ).
+            nodeType( NodeTypeOld.from( this.nodeType ) ).
             attachedBinaries( fromNodeAttachedBinaryJsonList( attachedBinaries ) ).
             timestamp( this.timestamp ).
             build();

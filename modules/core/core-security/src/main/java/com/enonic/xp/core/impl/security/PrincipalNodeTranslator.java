@@ -93,8 +93,7 @@ abstract class PrincipalNodeTranslator
             name( PrincipalKeyNodeTranslator.toNodeName( principal.getKey() ).toString() ).
             parent( principal.getKey().toPath().getParentPath() ).
             setNodeId( NodeId.from( principal.getKey().toString().toLowerCase() ) ).
-            inheritPermissions( true ).
-            indexConfigDocument( PrincipalIndexConfigFactory.create() );
+            inheritPermissions( true );
 
         final PropertyTree data = new PropertyTree();
         data.setString( PrincipalPropertyNames.DISPLAY_NAME_KEY, principal.getDisplayName() );

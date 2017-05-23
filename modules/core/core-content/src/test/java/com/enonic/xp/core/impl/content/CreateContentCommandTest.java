@@ -27,7 +27,7 @@ import com.enonic.xp.node.NodeId;
 import com.enonic.xp.node.NodeName;
 import com.enonic.xp.node.NodePath;
 import com.enonic.xp.node.NodeService;
-import com.enonic.xp.node.NodeType;
+import com.enonic.xp.node.NodeTypeOld;
 import com.enonic.xp.schema.content.ContentType;
 import com.enonic.xp.schema.content.ContentTypeName;
 import com.enonic.xp.schema.content.ContentTypeService;
@@ -435,11 +435,10 @@ public class CreateContentCommandTest
             parentPath( params.getParent() ).
             name( NodeName.from( params.getName() ) ).
             data( params.getData() ).
-            indexConfigDocument( params.getIndexConfigDocument() ).
             childOrder( params.getChildOrder() != null ? params.getChildOrder() : ChildOrder.defaultOrder() ).
             permissions( permissions ).
             inheritPermissions( params.inheritPermissions() ).
-            nodeType( params.getNodeType() != null ? params.getNodeType() : NodeType.DEFAULT_NODE_COLLECTION ).
+            nodeType( params.getNodeType() != null ? params.getNodeType() : NodeTypeOld.DEFAULT_NODE_COLLECTION ).
             timestamp( Instant.now() ).
             build();
     }

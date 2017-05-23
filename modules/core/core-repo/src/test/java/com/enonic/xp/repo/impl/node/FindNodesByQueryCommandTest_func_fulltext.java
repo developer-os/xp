@@ -7,8 +7,6 @@ import com.google.common.base.Strings;
 
 import com.enonic.xp.data.PropertySet;
 import com.enonic.xp.data.PropertyTree;
-import com.enonic.xp.index.IndexConfig;
-import com.enonic.xp.index.PatternIndexConfigDocument;
 import com.enonic.xp.node.CreateNodeParams;
 import com.enonic.xp.node.FindNodesByQueryResult;
 import com.enonic.xp.node.Node;
@@ -42,10 +40,6 @@ public class FindNodesByQueryCommandTest_func_fulltext
         final Node node = createNode( CreateNodeParams.create().
             name( "my-node-1" ).
             parent( NodePath.ROOT ).
-            indexConfigDocument( PatternIndexConfigDocument.create().
-                analyzer( NodeConstants.DOCUMENT_INDEX_DEFAULT_ANALYZER ).
-                defaultConfig( IndexConfig.BY_TYPE ).
-                build() ).
             build() );
 
         final NodeQuery query = NodeQuery.create().
@@ -73,10 +67,6 @@ public class FindNodesByQueryCommandTest_func_fulltext
             name( "my-node-1" ).
             parent( NodePath.ROOT ).
             data( data ).
-            indexConfigDocument( PatternIndexConfigDocument.create().
-                analyzer( NodeConstants.DOCUMENT_INDEX_DEFAULT_ANALYZER ).
-                defaultConfig( IndexConfig.BY_TYPE ).
-                build() ).
             build() );
 
         refresh();
@@ -119,10 +109,7 @@ public class FindNodesByQueryCommandTest_func_fulltext
             name( "my-node-1" ).
             parent( NodePath.ROOT ).
             data( data ).
-            indexConfigDocument( PatternIndexConfigDocument.create().
-                analyzer( NodeConstants.DOCUMENT_INDEX_DEFAULT_ANALYZER ).
-                defaultConfig( IndexConfig.BY_TYPE ).
-                build() ).
+
             build() );
 
         refresh();
@@ -171,10 +158,7 @@ public class FindNodesByQueryCommandTest_func_fulltext
             name( "fisk ost" ).
             parent( NodePath.ROOT ).
             data( data ).
-            indexConfigDocument( PatternIndexConfigDocument.create().
-                analyzer( NodeConstants.DOCUMENT_INDEX_DEFAULT_ANALYZER ).
-                defaultConfig( IndexConfig.BY_TYPE ).
-                build() ).
+
             build() );
 
         final NodeQuery query = NodeQuery.create().
@@ -200,10 +184,7 @@ public class FindNodesByQueryCommandTest_func_fulltext
             name( "my-node-1" ).
             parent( NodePath.ROOT ).
             data( data ).
-            indexConfigDocument( PatternIndexConfigDocument.create().
-                analyzer( NodeConstants.DOCUMENT_INDEX_DEFAULT_ANALYZER ).
-                defaultConfig( IndexConfig.BY_TYPE ).
-                build() ).
+
             build() );
 
         refresh();
@@ -232,10 +213,7 @@ public class FindNodesByQueryCommandTest_func_fulltext
             name( "my-node-1" ).
             parent( NodePath.ROOT ).
             data( data ).
-            indexConfigDocument( PatternIndexConfigDocument.create().
-                analyzer( NodeConstants.DOCUMENT_INDEX_DEFAULT_ANALYZER ).
-                defaultConfig( IndexConfig.BY_TYPE ).
-                build() ).
+
             build() );
 
         final PropertyTree data2 = new PropertyTree();
@@ -245,10 +223,7 @@ public class FindNodesByQueryCommandTest_func_fulltext
             name( "my-node-2" ).
             parent( NodePath.ROOT ).
             data( data2 ).
-            indexConfigDocument( PatternIndexConfigDocument.create().
-                analyzer( NodeConstants.DOCUMENT_INDEX_DEFAULT_ANALYZER ).
-                defaultConfig( IndexConfig.BY_TYPE ).
-                build() ).
+
             build() );
 
         refresh();
@@ -278,10 +253,7 @@ public class FindNodesByQueryCommandTest_func_fulltext
             name( "my-node-1" ).
             parent( NodePath.ROOT ).
             data( data ).
-            indexConfigDocument( PatternIndexConfigDocument.create().
-                analyzer( NodeConstants.DOCUMENT_INDEX_DEFAULT_ANALYZER ).
-                defaultConfig( IndexConfig.BY_TYPE ).
-                build() ).
+
             build() );
 
         final PropertyTree data2 = new PropertyTree();
@@ -291,10 +263,7 @@ public class FindNodesByQueryCommandTest_func_fulltext
             name( "my-node-2" ).
             parent( NodePath.ROOT ).
             data( data2 ).
-            indexConfigDocument( PatternIndexConfigDocument.create().
-                analyzer( NodeConstants.DOCUMENT_INDEX_DEFAULT_ANALYZER ).
-                defaultConfig( IndexConfig.BY_TYPE ).
-                build() ).
+
             build() );
 
         final NodeQuery query = NodeQuery.create().
@@ -348,10 +317,7 @@ public class FindNodesByQueryCommandTest_func_fulltext
             name( "node1" ).
             parent( NodePath.ROOT ).
             data( data ).
-            indexConfigDocument( PatternIndexConfigDocument.create().
-                analyzer( NodeConstants.DOCUMENT_INDEX_DEFAULT_ANALYZER ).
-                defaultConfig( IndexConfig.BY_TYPE ).
-                build() ).
+
             build() );
 
         final PropertyTree data2 = new PropertyTree();
@@ -363,10 +329,7 @@ public class FindNodesByQueryCommandTest_func_fulltext
             name( "node2" ).
             parent( NodePath.ROOT ).
             data( data2 ).
-            indexConfigDocument( PatternIndexConfigDocument.create().
-                analyzer( NodeConstants.DOCUMENT_INDEX_DEFAULT_ANALYZER ).
-                defaultConfig( IndexConfig.BY_TYPE ).
-                build() ).
+
             build() );
 
         queryAndAssert( "fulltext('test*', 'leter etter fisk', 'OR')", 2 );
@@ -400,10 +363,7 @@ public class FindNodesByQueryCommandTest_func_fulltext
             name( title ).
             parent( NodePath.ROOT ).
             data( data ).
-            indexConfigDocument( PatternIndexConfigDocument.create().
-                analyzer( NodeConstants.DOCUMENT_INDEX_DEFAULT_ANALYZER ).
-                defaultConfig( IndexConfig.BY_TYPE ).
-                build() ).
+
             build() );
     }
 
@@ -418,10 +378,7 @@ public class FindNodesByQueryCommandTest_func_fulltext
             name( "my-node-1" ).
             parent( NodePath.ROOT ).
             data( data ).
-            indexConfigDocument( PatternIndexConfigDocument.create().
-                analyzer( NodeConstants.DOCUMENT_INDEX_DEFAULT_ANALYZER ).
-                defaultConfig( IndexConfig.BY_TYPE ).
-                build() ).
+
             build() );
 
         queryAndAssert( "fulltext('title', 'levenshteins algorithm', 'AND')", 1 );
@@ -440,10 +397,6 @@ public class FindNodesByQueryCommandTest_func_fulltext
             name( "my-node-1" ).
             parent( NodePath.ROOT ).
             data( data ).
-            indexConfigDocument( PatternIndexConfigDocument.create().
-                analyzer( NodeConstants.DOCUMENT_INDEX_DEFAULT_ANALYZER ).
-                defaultConfig( IndexConfig.BY_TYPE ).
-                build() ).
             build() );
 
         queryAndAssert( "fulltext('title', 'testing', 'AND')", 1 );
@@ -461,10 +414,6 @@ public class FindNodesByQueryCommandTest_func_fulltext
             name( "my-node-1" ).
             parent( NodePath.ROOT ).
             data( data ).
-            indexConfigDocument( PatternIndexConfigDocument.create().
-                analyzer( NodeConstants.DOCUMENT_INDEX_DEFAULT_ANALYZER ).
-                defaultConfig( IndexConfig.BY_TYPE ).
-                build() ).
             build() );
 
         queryAndAssert( "fulltext('title', 'testing', 'AND')", 1 );

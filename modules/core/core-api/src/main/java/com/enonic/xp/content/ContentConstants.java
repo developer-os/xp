@@ -8,7 +8,7 @@ import com.enonic.xp.context.Context;
 import com.enonic.xp.context.ContextBuilder;
 import com.enonic.xp.index.ChildOrder;
 import com.enonic.xp.node.NodePath;
-import com.enonic.xp.node.NodeType;
+import com.enonic.xp.node.NodeTypeOld;
 import com.enonic.xp.query.expr.FieldOrderExpr;
 import com.enonic.xp.query.expr.OrderExpr;
 import com.enonic.xp.repository.Repository;
@@ -62,7 +62,7 @@ public class ContentConstants
 
     public static final NodePath CONTENT_ROOT_PATH = NodePath.create( CONTENT_ROOT_PARENT, CONTENT_ROOT_NAME ).build();
 
-    public static final NodeType CONTENT_NODE_COLLECTION = NodeType.from( "content" );
+    public static final NodeTypeOld CONTENT_NODE_COLLECTION = NodeTypeOld.from( "content" );
 
     public static final ChildOrder DEFAULT_CONTENT_REPO_ROOT_ORDER = ChildOrder.from( "_name ASC" );
 

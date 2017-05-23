@@ -92,7 +92,7 @@ final class CreateContentCommand
 
         final CreateContentTranslatorParams createContentTranslatorParams = createContentTranslatorParams( processedParams );
 
-        final CreateNodeParams createNodeParams = CreateNodeParamsFactory.create( createContentTranslatorParams, this.contentTypeService );
+        final CreateNodeParams createNodeParams = CreateNodeParamsFactory.create( createContentTranslatorParams );
 
         try
         {

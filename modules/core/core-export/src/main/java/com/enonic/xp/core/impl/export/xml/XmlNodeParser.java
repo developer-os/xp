@@ -19,7 +19,7 @@ import com.enonic.xp.index.PathIndexConfig;
 import com.enonic.xp.index.PatternIndexConfigDocument;
 import com.enonic.xp.node.Node;
 import com.enonic.xp.node.NodeId;
-import com.enonic.xp.node.NodeType;
+import com.enonic.xp.node.NodeTypeOld;
 import com.enonic.xp.util.BinaryReference;
 import com.enonic.xp.util.GeoPoint;
 import com.enonic.xp.util.Link;
@@ -56,7 +56,7 @@ public final class XmlNodeParser
             timestampString != null && StringUtils.isNotBlank( timestampString ) ? Instant.parse( timestampString ) : null );
 
         this.builder.childOrder( ChildOrder.from( root.getChildValue( "childOrder" ) ) );
-        this.builder.nodeType( NodeType.from( root.getChildValue( "nodeType" ) ) );
+        this.builder.nodeType( NodeTypeOld.from( root.getChildValue( "nodeType" ) ) );
 
         this.builder.data( parseData( root.getChild( "data" ) ) );
         this.builder.indexConfigDocument( parseIndexConfigs( root.getChild( "indexConfigs" ) ) );
