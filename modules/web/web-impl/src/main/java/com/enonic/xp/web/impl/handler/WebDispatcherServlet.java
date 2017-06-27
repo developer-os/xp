@@ -124,19 +124,6 @@ public final class WebDispatcherServlet
         return result;
     }
 
-    private HttpMethod getHttpMethod( final HttpServletRequest req )
-    {
-        try
-        {
-            return HttpMethod.valueOf( req.getMethod().toUpperCase() );
-        }
-        catch ( IllegalArgumentException e )
-        {
-            //throw new WebException( HttpStatus.METHOD_NOT_ALLOWED, String.format( "Method %s not allowed", method ) );
-            return null;
-        }
-    }
-
     private void setHeaders( final HttpServletRequest from, final WebRequest to )
     {
         for ( final String key : Collections.list( from.getHeaderNames() ) )
