@@ -56,6 +56,32 @@ public final class WebDispatcherServlet
     protected void service( final HttpServletRequest req, final HttpServletResponse res )
         throws ServletException, IOException
     {
+        if ( canHandle( req ) )
+        {
+            handle( req, res );
+        }
+        else
+        {
+            super.service( req, res );
+        }
+    }
+
+    private boolean canHandle( final HttpServletRequest req )
+    {
+        final String requestMethodName = req.getMethod().toUpperCase();
+        for ( HttpMethod httpMethod : HttpMethod.values() )
+        {
+            if ( httpMethod.name().equals( requestMethodName ) )
+            {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private void handle( final HttpServletRequest req, final HttpServletResponse res )
+        throws IOException
+    {
         final WebRequest webRequest = newWebRequest( req );
         final WebSocketContext webSocketContext = this.webSocketContextFactory.newContext( req, res );
         webRequest.setWebSocketContext( webSocketContext );
@@ -96,6 +122,19 @@ public final class WebDispatcherServlet
         setCookies( req, result );
 
         return result;
+    }
+
+    private HttpMethod getHttpMethod( final HttpServletRequest req )
+    {
+        try
+        {
+            return HttpMethod.valueOf( req.getMethod().toUpperCase() );
+        }
+        catch ( IllegalArgumentException e )
+        {
+            //throw new WebException( HttpStatus.METHOD_NOT_ALLOWED, String.format( "Method %s not allowed", method ) );
+            return null;
+        }
     }
 
     private void setHeaders( final HttpServletRequest from, final WebRequest to )
