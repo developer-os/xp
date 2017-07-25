@@ -16,6 +16,8 @@ module api.content.form.inputtype.double {
 
         private max: number = null;
 
+        private value: Value = null;
+
         constructor(config: api.form.inputtype.InputTypeViewContext) {
             super(config);
             this.readConfig(config);
@@ -29,13 +31,15 @@ module api.content.form.inputtype.double {
             return super.newInitialValue() || ValueTypes.DOUBLE.newNullValue();
         }
 
+        private getConfigProperty(config: api.form.inputtype.InputTypeViewContext, propertyName: string ) {
+            const configProperty = config.inputConfig[propertyName] ? config.inputConfig[propertyName][0] : {};
+
+            return NumberHelper.toNumber(configProperty['value']);
+        }
+
         protected readConfig(config: api.form.inputtype.InputTypeViewContext): void {
-
-            const minConfig = config.inputConfig['min'] ? config.inputConfig['min'][0] : {};
-            this.min = NumberHelper.toNumber(minConfig['value']);
-
-            const maxConfig = config.inputConfig['max'] ? config.inputConfig['max'][0] : {};
-            this.max = NumberHelper.toNumber(maxConfig['value']);
+            this.min = this.getConfigProperty(config, 'min');
+            this.max = this.getConfigProperty(config, 'max');
         }
 
         createInputOccurrenceElement(index: number, property: Property): api.dom.Element {
@@ -47,8 +51,10 @@ module api.content.form.inputtype.double {
             inputEl.setName(this.getInput().getName() + '-' + property.getIndex());
 
             inputEl.onValueChanged((event: api.ValueChangedEvent) => {
+                this.value = ValueTypes.DOUBLE.newValue(event.getNewValue());
+
                 let isValid = this.isValid(event.getNewValue());
-                let value = isValid ? ValueTypes.DOUBLE.newValue(event.getNewValue()) : this.newInitialValue();
+                let value = isValid ? this.value : this.newInitialValue();
 
                 this.notifyOccurrenceValueChanged(inputEl, value);
                 inputEl.updateValidationStatusOnUserInput(isValid);
@@ -71,8 +77,30 @@ module api.content.form.inputtype.double {
             input.resetBaseValues();
         }
 
-        valueBreaksRequiredContract(value: Value): boolean {
-            return value.isNull() || !value.getType().equals(ValueTypes.DOUBLE);
+        valueBreaksRequiredContract(propertyValue: Value, recording?: api.form.inputtype.InputValidationRecording): boolean {
+            let currentValue = this.value || propertyValue;
+
+            if (!this.isValidMin(currentValue.getDouble())) {
+                if (recording) {
+                    recording.setAdditionalValidationRecord(
+                        api.form.AdditionalValidationRecord.create().setOverwriteDefault(true).setMessage(
+                            `The value cannot be less than ${this.min}`).build());
+                }
+
+                return true;
+            }
+
+            if (!this.isValidMax(currentValue.getDouble())) {
+                if (recording) {
+                    recording.setAdditionalValidationRecord(
+                        api.form.AdditionalValidationRecord.create().setOverwriteDefault(true).setMessage(
+                            `The value cannot be greater than ${this.max}`).build());
+                }
+
+                return true;
+            }
+
+            return propertyValue.isNull() || !propertyValue.getType().equals(ValueTypes.DOUBLE);
         }
 
         hasInputElementValidUserInput(inputElement: api.dom.Element) {
@@ -81,9 +109,12 @@ module api.content.form.inputtype.double {
             return this.isValid(value.getValue());
         }
 
-        private isValid(value: string): boolean {
+        private isEmpty(value: string): boolean {
+            return api.util.StringHelper.isEmpty(value);
+        }
 
-            if (api.util.StringHelper.isEmpty(value)) {
+        private isValid(value: string): boolean {
+            if (this.isEmpty(value)) {
                 return true;
             }
 
@@ -115,36 +146,9 @@ module api.content.form.inputtype.double {
             return true;
         }
 
-        validate(silent: boolean = true): api.form.inputtype.InputValidationRecording {
-            const recording = super.validate(silent);
-
-            this.inputOccurrences.getOccurrenceViews().forEach((occurrenceView: InputOccurrenceView) => {
-
-                const value = NumberHelper.toNumber((<api.ui.text.TextInput>occurrenceView.getInputElement()).getValue());
-
-                if (!this.isValidMin(value)) {
-                    recording.setAdditionalValidationRecord(
-                        api.form.AdditionalValidationRecord.create().setOverwriteDefault(true).setMessage(
-                            `The value cannot be less than ${this.min}`).build());
-                }
-
-                if (!this.isValidMax(value)) {
-                    recording.setAdditionalValidationRecord(
-                        api.form.AdditionalValidationRecord.create().setOverwriteDefault(true).setMessage(
-                            `The value cannot be greater than ${this.max}`).build());
-                }
-
-            });
-
-            if (!silent && recording.validityChanged(this.previousValidationRecording)) {
-                this.notifyValidityChanged(new api.form.inputtype.InputValidityChangedEvent(recording, this.input.getName()));
-
-                this.previousValidationRecording = recording;
-            }
-
-            return recording.clone();
+        protected additionalValidate(recording: api.form.inputtype.InputValidationRecording) {
+            //Do nothing
         }
-
     }
 
     api.form.inputtype.InputTypeManager.register(new api.Class('Double', Double));

@@ -221,10 +221,11 @@ module api.form.inputtype.support {
             let recording = this.validateOccurrences();
 
             if (!this.hasValidUserInput()) {
-                recording.setAdditionalValidationRecord(api.form.AdditionalValidationRecord.create().
-                    setOverwriteDefault(true).
-                    setMessage('Incorrect value entered').
-                    build());
+                if (!recording.hasAdditionalValidationRecord()) {
+                    recording.setAdditionalValidationRecord(
+                        api.form.AdditionalValidationRecord.create().setOverwriteDefault(true).setMessage(
+                            'Incorrect value entered').build());
+                }
             } else {
                 this.additionalValidate(recording);
             }
@@ -234,7 +235,7 @@ module api.form.inputtype.support {
             }
 
             this.previousValidationRecording = recording;
-            return recording.clone();
+            return recording;
         }
 
         protected additionalValidate(recording: api.form.inputtype.InputValidationRecording) {
@@ -248,7 +249,7 @@ module api.form.inputtype.support {
 
                 let valueFromPropertyArray = this.propertyArray.getValue(occurrenceView.getIndex());
                 if (valueFromPropertyArray) {
-                    if (!this.valueBreaksRequiredContract(valueFromPropertyArray) && this.hasValidUserInput()) {
+                    if (!this.valueBreaksRequiredContract(valueFromPropertyArray, recording) && this.hasValidUserInput()) {
                         numberOfValids++;
                     }
                 }
@@ -277,7 +278,7 @@ module api.form.inputtype.support {
             return this.input;
         }
 
-        valueBreaksRequiredContract(value: Value): boolean {
+        valueBreaksRequiredContract(value: Value, recording?: api.form.inputtype.InputValidationRecording): boolean {
             throw new Error('Must be implemented by inheritor: ' + api.ClassHelper.getClassName(this));
         }
 
