@@ -1,0 +1,15 @@
+{
+  "key": "userStoreTestKey",
+  "displayName": "User store test",
+  "description": "User store used for testing",
+  "authConfig": {
+    "applicationKey": "com.enonic.app.test",
+    "config": {
+      "myApp": {
+        "subString": "subStringValue",
+        "subLong":123
+      },
+      "string":"stringValue"
+    }
+  }
+}

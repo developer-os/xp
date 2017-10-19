@@ -4,12 +4,15 @@ import java.time.Clock;
 import java.time.Instant;
 import java.time.ZoneId;
 
+import com.enonic.xp.app.ApplicationKey;
 import com.enonic.xp.data.PropertySet;
 import com.enonic.xp.data.PropertyTree;
+import com.enonic.xp.security.AuthConfig;
 import com.enonic.xp.security.Group;
 import com.enonic.xp.security.PrincipalKey;
 import com.enonic.xp.security.Role;
 import com.enonic.xp.security.User;
+import com.enonic.xp.security.UserStore;
 import com.enonic.xp.security.UserStoreKey;
 
 public class TestDataFixtures
@@ -17,6 +20,24 @@ public class TestDataFixtures
     private static final Instant NOW = Instant.ofEpochSecond( 0 );
 
     private static Clock clock = Clock.fixed( NOW, ZoneId.of( "UTC" ) );
+
+    static UserStore getTestUserStore()
+    {
+        return UserStore.create().
+            key( UserStoreKey.from( "userStoreTestKey" ) ).
+            description( "User store used for testing" ).
+            displayName( "User store test" ).
+            authConfig( getAuthConfig() ).
+            build();
+    }
+
+    private static AuthConfig getAuthConfig()
+    {
+        return AuthConfig.create().
+            applicationKey( ApplicationKey.from( "com.enonic.app.test" ) ).
+            config( getProfile() ).
+            build();
+    }
 
     static User getTestUser()
     {
