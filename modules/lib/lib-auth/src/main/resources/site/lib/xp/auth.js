@@ -439,3 +439,24 @@ exports.modifyRole = function (params) {
 
     return __.toNativeObject(bean.modifyRole());
 };
+
+/**
+ * Creates a UserStore.
+ *
+ * @example-ref examples/auth/createUserStore.js
+ *
+ * @param {string} name UserStore name.
+ * @param {string} params.displayName UserStore display name.
+ * @param {string} params.description UserStore description.
+ */
+exports.createUserStore = function (params) {
+    var bean = __.newBean('com.enonic.xp.lib.auth.CreateUserStoreHandler');
+
+    bean.name = required(params, 'name');
+    bean.displayName = nullOrValue(params.displayName);
+    bean.description = nullOrValue(params.description);
+    bean.authConfig = __.toScriptValue(required(params, 'idProvider'));
+    bean.permissions = __.toScriptValue(required(params, 'permissions'));
+
+    return __.toNativeObject(bean.createUserStore());
+};

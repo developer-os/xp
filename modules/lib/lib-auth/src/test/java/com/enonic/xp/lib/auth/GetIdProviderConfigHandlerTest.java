@@ -14,7 +14,7 @@ public class GetIdProviderConfigHandlerTest
         final UserStore userStore = TestDataFixtures.getTestUserStore();
         this.portalRequest.setUserStore( userStore );
 
-        runScript( "/site/lib/xp/examples/auth/getIdProviderConfig.js" );
+        runScript( "/site/lib/xp/examples/auth/getIdProviderConfig.js" ); //
     }
 
 
