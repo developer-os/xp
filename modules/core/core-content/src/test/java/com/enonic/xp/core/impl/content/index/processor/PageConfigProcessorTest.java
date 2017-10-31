@@ -19,16 +19,10 @@ import com.enonic.xp.page.DescriptorKey;
 import com.enonic.xp.page.PageDescriptor;
 import com.enonic.xp.page.PageDescriptorService;
 import com.enonic.xp.region.RegionDescriptors;
-import com.enonic.xp.schema.content.ContentType;
-import com.enonic.xp.schema.content.ContentTypeName;
-import com.enonic.xp.schema.content.ContentTypeService;
-import com.enonic.xp.schema.content.GetContentTypeParams;
 
-import static com.enonic.xp.content.ContentPropertyNames.CREATOR;
-import static com.enonic.xp.content.ContentPropertyNames.DATA;
 import static com.enonic.xp.content.ContentPropertyNames.PAGE;
-import static com.enonic.xp.content.ContentPropertyNames.PAGE_CONFIG;
-import static com.enonic.xp.content.ContentPropertyNames.PAGE_TEXT_COMPONENT_PROPERTY_PATH_PATTERN;
+import static com.enonic.xp.core.impl.content.index.processor.PageConfigProcessor.PAGE_CONFIG;
+import static com.enonic.xp.core.impl.content.index.processor.PageConfigProcessor.PAGE_TEXT_COMPONENT_PROPERTY_PATH_PATTERN;
 import static org.junit.Assert.*;
 
 public class PageConfigProcessorTest

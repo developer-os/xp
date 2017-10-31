@@ -16,6 +16,8 @@ import com.enonic.xp.index.IndexConfigDocument;
 import com.enonic.xp.index.PatternIndexConfigDocument;
 import com.enonic.xp.page.DescriptorKey;
 import com.enonic.xp.page.PageDescriptorService;
+import com.enonic.xp.region.RegionDescriptor;
+import com.enonic.xp.region.RegionDescriptors;
 import com.enonic.xp.schema.content.ContentTypeName;
 import com.enonic.xp.schema.content.ContentTypeService;
 import com.enonic.xp.schema.content.GetContentTypeParams;
@@ -46,6 +48,18 @@ public class ContentIndexConfigFactory
             return null;
         }
         return contentTypeService.getByName( new GetContentTypeParams().contentTypeName( contentTypeName ) ).getForm();
+    }
+
+    private Form getPageRegionForm( final PageDescriptorService pageDescriptorService, final DescriptorKey descriptorKey )
+    {
+        if ( pageDescriptorService == null || descriptorKey == null )
+        {
+            return null;
+        }
+        final RegionDescriptors regionDescriptors = pageDescriptorService.getByKey( descriptorKey ).getRegions();
+
+        regionDescriptors.forEach( regionDescriptor -> regionDescriptor. );
+        return pageDescriptorService.getByKey( descriptorKey ).getRegions().igetConfig();
     }
 
     private Form getPageConfigForm( final PageDescriptorService pageDescriptorService, final DescriptorKey descriptorKey )
