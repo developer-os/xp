@@ -50,6 +50,7 @@ public class NodeStorageServiceImpl
     @Override
     public Node store( final Node node, final InternalContext context )
     {
+
         final NodeVersionId nodeVersionId = nodeVersionService.store( NodeVersion.from( node ) );
 
         storeVersionMetadata( node, context, nodeVersionId );

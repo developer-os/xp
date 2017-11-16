@@ -4,6 +4,11 @@ dependencies {
     compile project( ':core:core-api' )
     compile 'org.elasticsearch:elasticsearch:1.5.2'
     compile 'org.apache.commons:commons-compress:1.14'
+    compile 'org.apache.ignite:ignite-core:2.3.0'
+    compile 'org.apache.ignite:ignite-osgi:2.3.0'
+    compile 'javax.cache:cache-api:1.0.0'
+    // https://mvnrepository.com/artifact/javax.cache/cache-api
+    // compile group: 'javax.cache', name: 'cache-api', version: '1.0.0'
     testCompile project( path: ':core:core-blobstore', configuration: 'testOutput' )
     testCompile project( path: ':core:core-api', configuration: 'testOutput' )
 }
