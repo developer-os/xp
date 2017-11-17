@@ -1,4 +1,4 @@
-package com.enonic.xp.repo.impl.ignite;
+package com.enonic.xp.repo.impl;
 
 public interface Grid
 {

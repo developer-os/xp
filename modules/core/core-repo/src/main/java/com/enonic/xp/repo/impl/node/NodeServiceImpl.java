@@ -63,7 +63,7 @@ import com.enonic.xp.query.expr.FieldOrderExpr;
 import com.enonic.xp.query.expr.OrderExpr;
 import com.enonic.xp.repo.impl.NodeEvents;
 import com.enonic.xp.repo.impl.binary.BinaryService;
-import com.enonic.xp.repo.impl.ignite.Grid;
+import com.enonic.xp.repo.impl.Grid;
 import com.enonic.xp.repo.impl.index.IndexServiceInternal;
 import com.enonic.xp.repo.impl.search.NodeSearchService;
 import com.enonic.xp.repo.impl.storage.NodeStorageService;
@@ -106,7 +106,7 @@ public class NodeServiceImpl
         final Object value = this.grid.get( id.toString() );
         if ( value != null )
         {
-            System.out.println( "Found in igniteCache: " + id + " : " + value );
+            System.out.println( "Found in distributedCache: " + id + " : " + value );
         }
 
         verifyContext();
