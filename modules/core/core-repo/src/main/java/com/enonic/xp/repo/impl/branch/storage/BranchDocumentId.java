@@ -1,5 +1,7 @@
 package com.enonic.xp.repo.impl.branch.storage;
 
+import java.io.Serializable;
+
 import com.google.common.base.Preconditions;
 import com.google.common.base.Strings;
 
@@ -7,6 +9,7 @@ import com.enonic.xp.branch.Branch;
 import com.enonic.xp.node.NodeId;
 
 public class BranchDocumentId
+    implements Serializable
 {
     private static final String SEPARATOR = "_";
 

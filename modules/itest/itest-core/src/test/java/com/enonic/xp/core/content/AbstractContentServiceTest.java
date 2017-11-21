@@ -67,6 +67,7 @@ import com.enonic.xp.repo.impl.elasticsearch.IndexServiceInternalImpl;
 import com.enonic.xp.repo.impl.elasticsearch.search.SearchDaoImpl;
 import com.enonic.xp.repo.impl.elasticsearch.storage.StorageDaoImpl;
 import com.enonic.xp.repo.impl.node.NodeServiceImpl;
+import com.enonic.xp.repo.impl.node.TestGrid;
 import com.enonic.xp.repo.impl.node.dao.NodeVersionServiceImpl;
 import com.enonic.xp.repo.impl.repository.NodeRepositoryServiceImpl;
 import com.enonic.xp.repo.impl.repository.RepositoryEntryServiceImpl;
@@ -246,6 +247,7 @@ public class AbstractContentServiceTest
         this.nodeService.setEventPublisher( eventPublisher );
         this.nodeService.setBinaryService( this.binaryService );
         this.nodeService.setRepositoryService( this.repositoryService );
+        this.nodeService.setGrid( new TestGrid() );
         this.nodeService.initialize();
 
         this.mixinService = Mockito.mock( MixinService.class );
@@ -292,7 +294,6 @@ public class AbstractContentServiceTest
         this.contentService.setLayoutDescriptorService( this.layoutDescriptorService );
         this.contentService.setFormDefaultValuesProcessor( ( form, data ) -> {
         } );
-
 
         initializeRepository();
     }

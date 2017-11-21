@@ -63,7 +63,6 @@ import com.enonic.xp.query.expr.FieldOrderExpr;
 import com.enonic.xp.query.expr.OrderExpr;
 import com.enonic.xp.repo.impl.NodeEvents;
 import com.enonic.xp.repo.impl.binary.BinaryService;
-import com.enonic.xp.repo.impl.Grid;
 import com.enonic.xp.repo.impl.index.IndexServiceInternal;
 import com.enonic.xp.repo.impl.search.NodeSearchService;
 import com.enonic.xp.repo.impl.storage.NodeStorageService;
@@ -92,8 +91,6 @@ public class NodeServiceImpl
 
     private RepositoryService repositoryService;
 
-    private Grid grid;
-
     @SuppressWarnings("unused")
     @Activate
     public void initialize()
@@ -103,12 +100,6 @@ public class NodeServiceImpl
     @Override
     public Node getById( final NodeId id )
     {
-        final Object value = this.grid.get( id.toString() );
-        if ( value != null )
-        {
-            System.out.println( "Found in distributedCache: " + id + " : " + value );
-        }
-
         verifyContext();
         final Node node = doGetById( id );
 
@@ -269,8 +260,6 @@ public class NodeServiceImpl
             this.eventPublisher.publish( NodeEvents.created( createdNode ) );
         }
 
-        this.grid.put( createdNode.id().toString(), createdNode.path().toString() );
-
         return createdNode;
     }
 
@@ -292,8 +281,6 @@ public class NodeServiceImpl
             this.eventPublisher.publish( NodeEvents.updated( updatedNode ) );
         }
 
-        this.grid.put( updatedNode.id().toString(), updatedNode.path().toString() );
-
         return updatedNode;
     }
 
@@ -308,8 +295,6 @@ public class NodeServiceImpl
             searchService( this.nodeSearchService ).
             build().
             execute();
-
-        this.grid.put( moveNodeResult.getSourceNode().id().toString(), moveNodeResult.getTargetNode().path().toString() );
 
         if ( moveNodeResult.getTargetNode() != null )
         {
@@ -937,11 +922,5 @@ public class NodeServiceImpl
     public void setRepositoryService( final RepositoryService repositoryService )
     {
         this.repositoryService = repositoryService;
-    }
-
-    @Reference
-    public void setGrid( final Grid grid )
-    {
-        this.grid = grid;
     }
 }

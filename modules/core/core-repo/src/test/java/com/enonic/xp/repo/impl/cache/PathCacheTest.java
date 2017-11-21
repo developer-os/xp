@@ -9,13 +9,13 @@ import com.enonic.xp.repository.RepositoryId;
 
 import static org.junit.Assert.*;
 
-public class BranchCachePathTest
+public class PathCacheTest
 {
     @Test
     public void put()
         throws Exception
     {
-        final BranchCachePath cache = new BranchCachePath();
+        final PathCache cache = new PathCache();
 
         final CachePath a = createPath( "a" );
 
@@ -28,7 +28,7 @@ public class BranchCachePathTest
     public void remove()
         throws Exception
     {
-        final BranchCachePath cache = new BranchCachePath();
+        final PathCache cache = new PathCache();
 
         final CachePath a = createPath( "a" );
 
@@ -42,7 +42,7 @@ public class BranchCachePathTest
     public void update_entry()
         throws Exception
     {
-        final BranchCachePath cache = new BranchCachePath();
+        final PathCache cache = new PathCache();
 
         final BranchDocumentId documentId = BranchDocumentId.from( "1_draft" );
         cache.cache( createPath( "/oldPath" ), documentId );
@@ -55,7 +55,7 @@ public class BranchCachePathTest
     public void update_entry_2()
         throws Exception
     {
-        final BranchCachePath cache = new BranchCachePath();
+        final PathCache cache = new PathCache();
 
         final BranchDocumentId id1 = BranchDocumentId.from( "1_draft" );
         final BranchDocumentId id2 = BranchDocumentId.from( "2_draft" );
@@ -71,7 +71,7 @@ public class BranchCachePathTest
     public void repo_separation()
         throws Exception
     {
-        final BranchCachePath cache = new BranchCachePath();
+        final PathCache cache = new PathCache();
 
         final CachePath repo1Path = createPath( "/myPath", RepositoryId.from( "repo1" ) );
         final CachePath repo2Path = createPath( "/myPath", RepositoryId.from( "repo2" ) );

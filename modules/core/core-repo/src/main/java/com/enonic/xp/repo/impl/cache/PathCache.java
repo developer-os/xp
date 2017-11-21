@@ -1,14 +1,46 @@
 package com.enonic.xp.repo.impl.cache;
 
+import com.google.common.cache.Cache;
+import com.google.common.cache.CacheBuilder;
+
 import com.enonic.xp.repo.impl.branch.storage.BranchDocumentId;
 
-public interface PathCache<T>
+public class PathCache
+    implements com.enonic.xp.cache.Cache<CachePath, BranchDocumentId>
 {
-    void cache( final CachePath path, final BranchDocumentId branchDocumentId );
 
-    void evict( final CachePath path );
+    private final Cache<CachePath, BranchDocumentId> pathCache;
 
-    void evictAll();
+    public PathCache()
+    {
+        pathCache = CacheBuilder.newBuilder().
+            maximumSize( 100000 ).
+            build();
+    }
 
-    T get( final CachePath path );
+    @Override
+    public void cache( final CachePath key, final BranchDocumentId value )
+    {
+        this.pathCache.put( key, value );
+    }
+
+    @Override
+    public void evict( final CachePath key )
+    {
+        this.pathCache.invalidate( key );
+    }
+
+    @Override
+    public BranchDocumentId get( final CachePath path )
+    {
+        return this.pathCache.getIfPresent( path );
+    }
+
+    @Override
+    public void evictAll()
+    {
+        this.pathCache.invalidateAll();
+    }
+
+
 }

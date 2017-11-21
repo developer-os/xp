@@ -2,11 +2,9 @@ package com.enonic.xp.repo.impl.node;
 
 import org.junit.Before;
 import org.junit.Test;
-import org.mockito.Mockito;
 
 import com.enonic.xp.context.Context;
 import com.enonic.xp.context.ContextBuilder;
-import com.enonic.xp.event.EventPublisher;
 import com.enonic.xp.node.CreateNodeParams;
 import com.enonic.xp.node.Node;
 import com.enonic.xp.node.NodePath;
@@ -23,19 +21,11 @@ import static org.junit.Assert.*;
 public class AccessControlTest
     extends AbstractNodeTest
 {
-    private NodeServiceImpl nodeService;
-
     @Before
     public void setUp()
         throws Exception
     {
         super.setUp();
-        this.nodeService = new NodeServiceImpl();
-        this.nodeService.setIndexServiceInternal( indexServiceInternal );
-        this.nodeService.setNodeStorageService( storageService );
-        this.nodeService.setNodeSearchService( searchService );
-        this.nodeService.setRepositoryService( repositoryService );
-        this.nodeService.setEventPublisher( Mockito.mock( EventPublisher.class ) );
 
         this.createDefaultRootNode();
     }

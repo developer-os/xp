@@ -22,7 +22,8 @@ public class IgniteActivator
         final IgniteConfiguration config = new IgniteConfiguration();
         config.setDiscoverySpi( DiscoveryFactory.create() );
 
-        Ignite ignite = Ignition.start( config );
+        final Ignite ignite = Ignition.start();
+        //   Ignite ignite = Ignition.start( config );
 
         System.out.println( " -----------------------------------------------------------------" );
         System.out.println( "------Setting ignite object (ACTIVATOR): " + ignite.hashCode() );

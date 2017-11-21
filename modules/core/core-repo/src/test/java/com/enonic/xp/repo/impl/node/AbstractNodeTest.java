@@ -32,6 +32,7 @@ import com.enonic.xp.node.Nodes;
 import com.enonic.xp.node.PushNodesResult;
 import com.enonic.xp.node.UpdateNodeParams;
 import com.enonic.xp.query.parser.QueryParser;
+import com.enonic.xp.repo.impl.Grid;
 import com.enonic.xp.repo.impl.binary.BinaryServiceImpl;
 import com.enonic.xp.repo.impl.branch.storage.BranchServiceImpl;
 import com.enonic.xp.repo.impl.config.RepoConfiguration;
@@ -200,6 +201,7 @@ public abstract class AbstractNodeTest
         nodeService.setNodeSearchService( this.searchService );
         nodeService.setBinaryService( this.binaryService );
         nodeService.setEventPublisher( Mockito.mock( EventPublisher.class ) );
+        nodeService.setGrid( new TestGrid() );
 
         final NodeRepositoryServiceImpl nodeRepositoryService = new NodeRepositoryServiceImpl();
         nodeRepositoryService.setIndexServiceInternal( this.indexServiceInternal );
