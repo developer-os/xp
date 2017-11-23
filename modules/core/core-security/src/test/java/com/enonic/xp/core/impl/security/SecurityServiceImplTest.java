@@ -18,6 +18,7 @@ import com.enonic.xp.repo.impl.elasticsearch.search.SearchDaoImpl;
 import com.enonic.xp.repo.impl.elasticsearch.storage.StorageDaoImpl;
 import com.enonic.xp.repo.impl.index.IndexServiceImpl;
 import com.enonic.xp.repo.impl.node.NodeServiceImpl;
+import com.enonic.xp.repo.impl.node.TestCacheProvider;
 import com.enonic.xp.repo.impl.node.dao.NodeVersionServiceImpl;
 import com.enonic.xp.repo.impl.repository.NodeRepositoryServiceImpl;
 import com.enonic.xp.repo.impl.repository.RepositoryEntryServiceImpl;
@@ -100,6 +101,7 @@ public class SecurityServiceImplTest
         final BranchServiceImpl branchService = new BranchServiceImpl();
         branchService.setStorageDao( storageDao );
         branchService.setSearchDao( searchDao );
+        branchService.setCacheProvider( new TestCacheProvider() );
 
         final VersionServiceImpl versionService = new VersionServiceImpl();
         versionService.setStorageDao( storageDao );

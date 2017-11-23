@@ -10,6 +10,9 @@ import org.osgi.service.component.annotations.Reference;
 
 import com.google.common.util.concurrent.Striped;
 
+import com.enonic.xp.cache.Cache;
+import com.enonic.xp.cache.CacheConfig;
+import com.enonic.xp.cache.CacheProvider;
 import com.enonic.xp.data.ValueFactory;
 import com.enonic.xp.node.NodeAlreadyExistAtPathException;
 import com.enonic.xp.node.NodeBranchEntries;
@@ -31,7 +34,6 @@ import com.enonic.xp.repo.impl.branch.BranchService;
 import com.enonic.xp.repo.impl.branch.search.NodeBranchQuery;
 import com.enonic.xp.repo.impl.branch.search.NodeBranchQueryResult;
 import com.enonic.xp.repo.impl.branch.search.NodeBranchQueryResultFactory;
-import com.enonic.xp.repo.impl.cache.BranchCachePath;
 import com.enonic.xp.repo.impl.cache.BranchPath;
 import com.enonic.xp.repo.impl.search.SearchDao;
 import com.enonic.xp.repo.impl.search.SearchRequest;
@@ -57,11 +59,16 @@ public class BranchServiceImpl
 
     private final static Striped<Lock> PARENT_PATH_LOCKS = Striped.lazyWeakLock( 100 );
 
-    private final BranchCachePath pathCache = new BranchCachePath();
+    private CacheProvider cacheProvider;
 
     private StorageDao storageDao;
 
     private SearchDao searchDao;
+
+    private Cache<String, String> getCache()
+    {
+        return this.cacheProvider.getOrCreate( "pathCache", new CacheConfig() );
+    }
 
     @Override
     public String store( final NodeBranchEntry nodeBranchEntry, final InternalContext context )
@@ -74,7 +81,7 @@ public class BranchServiceImpl
     {
         if ( previousPath != null && !previousPath.equals( nodeBranchEntry.getNodePath() ) )
         {
-            this.pathCache.evict( createPath( previousPath, context ) );
+            getCache().evict( createPath( previousPath, context ) );
         }
 
         if ( context.isSkipConstraints() )
@@ -120,10 +127,16 @@ public class BranchServiceImpl
 
     private void verifyNotExistingNodeWithOtherId( final NodeBranchEntry nodeBranchEntry, final InternalContext context )
     {
-        final BranchDocumentId branchDocumentId = this.pathCache.get( createPath( nodeBranchEntry.getNodePath(), context ) );
+        final String cachedValue = getCache().get( createPath( nodeBranchEntry.getNodePath(), context ) );
 
-        if ( branchDocumentId != null &&
-            !branchDocumentId.equals( BranchDocumentId.from( nodeBranchEntry.getNodeId(), context.getBranch() ) ) )
+        if ( cachedValue == null )
+        {
+            return;
+        }
+
+        final BranchDocumentId branchDocumentId = BranchDocumentId.from( cachedValue );
+
+        if ( !branchDocumentId.equals( BranchDocumentId.from( nodeBranchEntry.getNodeId(), context.getBranch() ) ) )
         {
             throw new NodeAlreadyExistAtPathException( nodeBranchEntry.getNodePath() );
         }
@@ -141,7 +154,7 @@ public class BranchServiceImpl
 
         storageDao.delete( BranchDeleteRequestFactory.create( nodeId, context ) );
 
-        pathCache.evict( createPath( nodeBranchEntry.getNodePath(), context ) );
+        getCache().evict( createPath( nodeBranchEntry.getNodePath(), context ) );
     }
 
     @Override
@@ -149,7 +162,7 @@ public class BranchServiceImpl
     {
         final NodeBranchEntries nodeBranchEntries = getIgnoreOrder( nodeIds, context );
 
-        nodeBranchEntries.forEach( entry -> pathCache.evict( createPath( entry.getNodePath(), context ) ) );
+        nodeBranchEntries.forEach( entry -> getCache().evict( createPath( entry.getNodePath(), context ) ) );
 
         storageDao.delete( DeleteRequests.create().
             forceRefresh( false ).
@@ -215,28 +228,28 @@ public class BranchServiceImpl
     @Override
     public void evictPath( final NodePath nodePath, final InternalContext context )
     {
-        pathCache.evict( new BranchPath( context.getRepositoryId(), context.getBranch(), nodePath ) );
+        getCache().evict( createPath( nodePath, context ) );
     }
 
     @Override
     public void evictAllPaths()
     {
-        pathCache.evictAll();
+        getCache().evictAll();
     }
 
-    private BranchPath createPath( final NodePath nodePath, final InternalContext context )
+    private String createPath( final NodePath nodePath, final InternalContext context )
     {
-        return new BranchPath( context.getRepositoryId(), context.getBranch(), nodePath );
+        return new BranchPath( context.getRepositoryId(), context.getBranch(), nodePath ).toString();
     }
 
 
     private NodeBranchEntry doGetByPath( final NodePath nodePath, final InternalContext context )
     {
-        final BranchDocumentId branchDocumentId =
-            this.pathCache.get( new BranchPath( context.getRepositoryId(), context.getBranch(), nodePath ) );
+        final String cachedValue = getCache().get( createPath( nodePath, context ) );
 
-        if ( branchDocumentId != null )
+        if ( cachedValue != null )
         {
+            final BranchDocumentId branchDocumentId = BranchDocumentId.from( cachedValue );
             return getFromCache( nodePath, context, branchDocumentId );
         }
 
@@ -291,7 +304,7 @@ public class BranchServiceImpl
 
     private void doCache( final InternalContext context, final NodePath nodePath, final BranchDocumentId branchDocumentId )
     {
-        pathCache.cache( new BranchPath( context.getRepositoryId(), context.getBranch(), nodePath ), branchDocumentId );
+        getCache().cache( createPath( nodePath, context ), branchDocumentId.toString() );
     }
 
     private NodeBranchEntries getKeepOrder( final NodeIds nodeIds, final InternalContext context )
@@ -300,7 +313,6 @@ public class BranchServiceImpl
 
         final GetBranchEntriesMethod getBranchEntriesMethod = GetBranchEntriesMethod.create().
             context( context ).
-            pathCache( this.pathCache ).
             returnFields( BRANCH_RETURN_FIELDS ).
             storageDao( this.storageDao ).
             build();
@@ -376,6 +388,12 @@ public class BranchServiceImpl
     public void setSearchDao( final SearchDao searchDao )
     {
         this.searchDao = searchDao;
+    }
+
+    @Reference
+    public void setCacheProvider( final CacheProvider cacheProvider )
+    {
+        this.cacheProvider = cacheProvider;
     }
 }
 

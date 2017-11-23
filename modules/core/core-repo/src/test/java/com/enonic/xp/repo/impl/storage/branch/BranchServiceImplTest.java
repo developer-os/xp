@@ -16,6 +16,7 @@ import com.enonic.xp.repo.impl.InternalContext;
 import com.enonic.xp.repo.impl.ReturnValues;
 import com.enonic.xp.repo.impl.branch.storage.BranchIndexPath;
 import com.enonic.xp.repo.impl.branch.storage.BranchServiceImpl;
+import com.enonic.xp.repo.impl.node.TestCacheProvider;
 import com.enonic.xp.repo.impl.search.SearchDao;
 import com.enonic.xp.repo.impl.search.SearchRequest;
 import com.enonic.xp.repo.impl.search.result.SearchResult;
@@ -49,6 +50,7 @@ public class BranchServiceImplTest
         this.branchService = new BranchServiceImpl();
         this.branchService.setStorageDao( storageDao );
         this.branchService.setSearchDao( searchDao );
+        this.branchService.setCacheProvider( new TestCacheProvider() );
 
         context = InternalContext.create().
             branch( Branch.from( "myBranch" ) ).
