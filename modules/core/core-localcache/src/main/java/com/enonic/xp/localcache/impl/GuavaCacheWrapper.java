@@ -8,7 +8,7 @@ public class GuavaCacheWrapper<K, V>
 {
     private final com.google.common.cache.Cache<K, V> cache;
 
-    public GuavaCacheWrapper( final com.google.common.cache.Cache<K, V> cache )
+    GuavaCacheWrapper( final com.google.common.cache.Cache<K, V> cache )
     {
         this.cache = cache;
     }

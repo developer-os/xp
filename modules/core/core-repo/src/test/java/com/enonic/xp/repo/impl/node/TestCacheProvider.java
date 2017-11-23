@@ -15,13 +15,13 @@ public class TestCacheProvider
     private Map<String, Cache> caches = Maps.newHashMap();
 
     @Override
-    public Cache get( final String name )
+    public <K, V> Cache<K, V> get( final String name )
     {
         return this.caches.get( name );
     }
 
     @Override
-    public Cache getOrCreate( final String name, final CacheConfig config )
+    public <K, V> Cache<K, V> getOrCreate( final String name, final CacheConfig config )
     {
         return caches.computeIfAbsent( name, k -> new TestCacheWrapper( CacheBuilder.newBuilder().
             maximumSize( 1000 ).

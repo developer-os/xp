@@ -2,7 +2,7 @@ package com.enonic.xp.cache;
 
 public interface CacheProvider
 {
-    Cache get( final String name );
+    <K, V> Cache<K, V> get( final String name );
 
-    Cache getOrCreate( final String name, final CacheConfig config );
+    <K, V> Cache<K, V> getOrCreate( final String name, final CacheConfig config );
 }
