@@ -7,8 +7,6 @@ import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
 
 import com.google.common.io.ByteSource;
-import com.hazelcast.cache.ICache;
-import com.hazelcast.core.HazelcastInstance;
 
 import com.enonic.xp.branch.Branch;
 import com.enonic.xp.context.ContextAccessor;
@@ -93,20 +91,10 @@ public class NodeServiceImpl
 
     private RepositoryService repositoryService;
 
-    private HazelcastInstance hazelcastInstance;
-
-    private ICache<Object, Object> pathCache;
-
     @SuppressWarnings("unused")
     @Activate
     public void initialize()
     {
-        if ( this.hazelcastInstance != null )
-        {
-            final ICache<Object, Object> pathCache = this.hazelcastInstance.getCacheManager().getCache( "pathCache" );
-
-            System.out.println( "PathCache: " + pathCache.size() );
-        }
     }
 
     @Override
@@ -121,8 +109,6 @@ public class NodeServiceImpl
             throw new NodeNotFoundException(
                 "Node with id " + id + " not found in branch " + ContextAccessor.current().getBranch().getValue() );
         }
-
-        //this.pathCache.put( node.path().toString(), node.id().toString(), null );
 
         return node;
     }
@@ -936,10 +922,5 @@ public class NodeServiceImpl
     {
         this.repositoryService = repositoryService;
     }
-
-    @Reference
-    public void setHazelcastInstance( final HazelcastInstance hazelcastInstance )
-    {
-        this.hazelcastInstance = hazelcastInstance;
-    }
+    
 }

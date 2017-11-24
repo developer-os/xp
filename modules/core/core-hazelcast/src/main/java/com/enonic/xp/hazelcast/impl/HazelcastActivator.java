@@ -22,6 +22,9 @@ public class HazelcastActivator
         Config config = new Config();
         config.setClassLoader( appClassLoader );
         HazelcastInstance instance = Hazelcast.newHazelcastInstance( config );
+
+        System.out.println( "Hazelcast instance: " + instance.getName() );
+
         context.registerService( HazelcastInstance.class, instance, new Hashtable<>() );
     }
 }

@@ -87,6 +87,7 @@ include 'repack:repack-elasticsearch'
 include 'repack:repack-jparsec'
 include 'repack:repack-okhttp'
 include 'repack:repack-resteasy'
+include 'repack:repack-javax-cache-api'
 
 include 'runtime'
 include 'docs'
