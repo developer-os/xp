@@ -51,6 +51,9 @@ addBundle( project( ':repack:repack-elasticsearch' ), 8 )
 addBundle( project( ':repack:repack-resteasy' ), 8 )
 addBundle( project( ':repack:repack-attoparser' ), 8 )
 addBundle( project( ':repack:repack-okhttp' ), 8 )
+addBundle( project( ':repack:repack-javax-cache-api' ), 8 )
+addBundle( 'org.apache.ignite:ignite-core:2.3.0', 8 )
+addBundle( 'org.apache.ignite:ignite-osgi:2.3.0', 8 )
 
 // API bundles
 addBundle( project( ':core:core-api' ), 10 )
@@ -80,6 +83,7 @@ addBundle( project( ':core:core-extractor' ), 22 )
 addBundle( project( ':core:core-auth' ), 22 )
 addBundle( project( ':core:core-macro' ), 22 )
 addBundle( project( ':core:core-task' ), 22 )
+addBundle( project( ':core:core-ignite' ), 22 )
 
 // Server bundles
 addBundle( project( ':server:server-config' ), 12 )
