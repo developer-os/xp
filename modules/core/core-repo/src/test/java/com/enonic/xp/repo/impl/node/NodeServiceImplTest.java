@@ -58,7 +58,6 @@ public class NodeServiceImplTest
         this.nodeService.setRepositoryService( this.repositoryService );
         this.nodeService.setBinaryService( this.binaryService );
         this.nodeService.setEventPublisher( Mockito.mock( EventPublisher.class ) );
-        this.nodeService.setGrid( new TestGrid() );
         this.createDefaultRootNode();
     }
 

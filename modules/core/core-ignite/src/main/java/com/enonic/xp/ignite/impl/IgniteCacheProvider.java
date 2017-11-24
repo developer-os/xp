@@ -16,7 +16,20 @@ public class IgniteCacheProvider
     private Ignite ignite;
 
     @Override
-    public Cache getOrCreate( final String name, final CacheConfig config )
+    public <K, V> Cache<K, V> get( final String name )
+    {
+        final IgniteCache<Object, Object> cache = this.ignite.cache( name );
+
+        if ( cache != null )
+        {
+            return new IgniteCacheWrapper( cache );
+        }
+
+        return null;
+    }
+
+    @Override
+    public <K, V> Cache<K, V> getOrCreate( final String name, final CacheConfig config )
     {
         final IgniteCache<Object, Object> existingCache = this.ignite.cache( name );
 
