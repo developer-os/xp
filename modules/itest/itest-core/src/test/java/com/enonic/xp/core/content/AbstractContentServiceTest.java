@@ -67,7 +67,7 @@ import com.enonic.xp.repo.impl.elasticsearch.IndexServiceInternalImpl;
 import com.enonic.xp.repo.impl.elasticsearch.search.SearchDaoImpl;
 import com.enonic.xp.repo.impl.elasticsearch.storage.StorageDaoImpl;
 import com.enonic.xp.repo.impl.node.NodeServiceImpl;
-import com.enonic.xp.repo.impl.node.TestGrid;
+import com.enonic.xp.repo.impl.node.TestCacheProvider;
 import com.enonic.xp.repo.impl.node.dao.NodeVersionServiceImpl;
 import com.enonic.xp.repo.impl.repository.NodeRepositoryServiceImpl;
 import com.enonic.xp.repo.impl.repository.RepositoryEntryServiceImpl;
@@ -197,6 +197,7 @@ public class AbstractContentServiceTest
         this.branchService = new BranchServiceImpl();
         this.branchService.setStorageDao( storageDao );
         this.branchService.setSearchDao( this.searchDao );
+        this.branchService.setCacheProvider( new TestCacheProvider() );
 
         this.versionService = new VersionServiceImpl();
         this.versionService.setStorageDao( storageDao );
@@ -247,7 +248,6 @@ public class AbstractContentServiceTest
         this.nodeService.setEventPublisher( eventPublisher );
         this.nodeService.setBinaryService( this.binaryService );
         this.nodeService.setRepositoryService( this.repositoryService );
-        this.nodeService.setGrid( new TestGrid() );
         this.nodeService.initialize();
 
         this.mixinService = Mockito.mock( MixinService.class );

@@ -5,7 +5,6 @@ import java.util.concurrent.locks.Lock;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
-import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
 
@@ -60,25 +59,16 @@ public class BranchServiceImpl
 
     private final static Striped<Lock> PARENT_PATH_LOCKS = Striped.lazyWeakLock( 100 );
 
+    private CacheProvider cacheProvider;
+
     private StorageDao storageDao;
 
     private SearchDao searchDao;
-
-    private CacheProvider cacheProvider;
-
-    //private Cache<CachePath, BranchDocumentId> cache;
-
-    @Activate
-    public void activate()
-    {
-        this.cacheProvider.getOrCreate( "pathCache", new CacheConfig() );
-    }
 
     private Cache<String, String> getCache()
     {
         return this.cacheProvider.getOrCreate( "pathCache", new CacheConfig() );
     }
-
 
     @Override
     public String store( final NodeBranchEntry nodeBranchEntry, final InternalContext context )
@@ -91,7 +81,7 @@ public class BranchServiceImpl
     {
         if ( previousPath != null && !previousPath.equals( nodeBranchEntry.getNodePath() ) )
         {
-            getCache().evict( createPath( previousPath, context ).toString() );
+            getCache().evict( createPath( previousPath, context ) );
         }
 
         if ( context.isSkipConstraints() )
@@ -137,14 +127,14 @@ public class BranchServiceImpl
 
     private void verifyNotExistingNodeWithOtherId( final NodeBranchEntry nodeBranchEntry, final InternalContext context )
     {
-        final String value = getCache().get( createPath( nodeBranchEntry.getNodePath(), context ).toString() );
+        final String cachedValue = getCache().get( createPath( nodeBranchEntry.getNodePath(), context ) );
 
-        if ( value == null )
+        if ( cachedValue == null )
         {
             return;
         }
 
-        final BranchDocumentId branchDocumentId = BranchDocumentId.from( value );
+        final BranchDocumentId branchDocumentId = BranchDocumentId.from( cachedValue );
 
         if ( !branchDocumentId.equals( BranchDocumentId.from( nodeBranchEntry.getNodeId(), context.getBranch() ) ) )
         {
@@ -164,7 +154,7 @@ public class BranchServiceImpl
 
         storageDao.delete( BranchDeleteRequestFactory.create( nodeId, context ) );
 
-        getCache().evict( createPath( nodeBranchEntry.getNodePath(), context ).toString() );
+        getCache().evict( createPath( nodeBranchEntry.getNodePath(), context ) );
     }
 
     @Override
@@ -172,7 +162,7 @@ public class BranchServiceImpl
     {
         final NodeBranchEntries nodeBranchEntries = getIgnoreOrder( nodeIds, context );
 
-        nodeBranchEntries.forEach( entry -> getCache().evict( createPath( entry.getNodePath(), context ).toString() ) );
+        nodeBranchEntries.forEach( entry -> getCache().evict( createPath( entry.getNodePath(), context ) ) );
 
         storageDao.delete( DeleteRequests.create().
             forceRefresh( false ).
@@ -238,7 +228,7 @@ public class BranchServiceImpl
     @Override
     public void evictPath( final NodePath nodePath, final InternalContext context )
     {
-        getCache().evict( new BranchPath( context.getRepositoryId(), context.getBranch(), nodePath ).toString() );
+        getCache().evict( createPath( nodePath, context ) );
     }
 
     @Override
@@ -247,20 +237,20 @@ public class BranchServiceImpl
         getCache().evictAll();
     }
 
-    private BranchPath createPath( final NodePath nodePath, final InternalContext context )
+    private String createPath( final NodePath nodePath, final InternalContext context )
     {
-        return new BranchPath( context.getRepositoryId(), context.getBranch(), nodePath );
+        return new BranchPath( context.getRepositoryId(), context.getBranch(), nodePath ).toString();
     }
 
 
     private NodeBranchEntry doGetByPath( final NodePath nodePath, final InternalContext context )
     {
+        final String cachedValue = getCache().get( createPath( nodePath, context ) );
 
-        final String value = getCache().get( new BranchPath( context.getRepositoryId(), context.getBranch(), nodePath ).toString() );
-
-        if ( value != null )
+        if ( cachedValue != null )
         {
-            return getFromCache( nodePath, context, BranchDocumentId.from( value ) );
+            final BranchDocumentId branchDocumentId = BranchDocumentId.from( cachedValue );
+            return getFromCache( nodePath, context, branchDocumentId );
         }
 
         final NodeBranchQuery query = NodeBranchQuery.create().
@@ -314,7 +304,7 @@ public class BranchServiceImpl
 
     private void doCache( final InternalContext context, final NodePath nodePath, final BranchDocumentId branchDocumentId )
     {
-        getCache().cache( new BranchPath( context.getRepositoryId(), context.getBranch(), nodePath ).toString(), branchDocumentId.toString() );
+        getCache().cache( createPath( nodePath, context ), branchDocumentId.toString() );
     }
 
     private NodeBranchEntries getKeepOrder( final NodeIds nodeIds, final InternalContext context )

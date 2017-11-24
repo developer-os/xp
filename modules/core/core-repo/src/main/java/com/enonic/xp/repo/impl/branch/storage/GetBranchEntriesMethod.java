@@ -21,7 +21,6 @@ class GetBranchEntriesMethod
 {
     private final InternalContext context;
 
-
     private final ReturnFields returnFields;
 
     private final StorageDao storageDao;
@@ -85,6 +84,7 @@ class GetBranchEntriesMethod
             context = val;
             return this;
         }
+
 
         public Builder returnFields( final ReturnFields val )
         {

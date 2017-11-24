@@ -18,7 +18,7 @@ import com.enonic.xp.repo.impl.elasticsearch.search.SearchDaoImpl;
 import com.enonic.xp.repo.impl.elasticsearch.storage.StorageDaoImpl;
 import com.enonic.xp.repo.impl.index.IndexServiceImpl;
 import com.enonic.xp.repo.impl.node.NodeServiceImpl;
-import com.enonic.xp.repo.impl.node.TestGrid;
+import com.enonic.xp.repo.impl.node.TestCacheProvider;
 import com.enonic.xp.repo.impl.node.dao.NodeVersionServiceImpl;
 import com.enonic.xp.repo.impl.repository.NodeRepositoryServiceImpl;
 import com.enonic.xp.repo.impl.repository.RepositoryEntryServiceImpl;
@@ -101,6 +101,7 @@ public class SecurityServiceImplTest
         final BranchServiceImpl branchService = new BranchServiceImpl();
         branchService.setStorageDao( storageDao );
         branchService.setSearchDao( searchDao );
+        branchService.setCacheProvider( new TestCacheProvider() );
 
         final VersionServiceImpl versionService = new VersionServiceImpl();
         versionService.setStorageDao( storageDao );
@@ -148,7 +149,6 @@ public class SecurityServiceImplTest
         this.nodeService.setBinaryService( binaryService );
         this.nodeService.setRepositoryService( repositoryService );
         this.nodeService.setEventPublisher( this.eventPublisher );
-        this.nodeService.setGrid( new TestGrid() );
         this.nodeService.initialize();
 
         IndexServiceImpl indexService = new IndexServiceImpl();
@@ -212,19 +212,20 @@ public class SecurityServiceImplTest
     public void testCreateUserThrowsExceptionWhenNameIsOccupied()
         throws Exception
     {
-        runAsAdmin( () -> {
-            final PrincipalKey userKey1 = PrincipalKey.ofUser( SYSTEM, "User1" );
-            final CreateUserParams createUser1 = CreateUserParams.create().
-                userKey( userKey1 ).
-                displayName( "User 1" ).
-                email( "user1@enonic.com" ).
-                login( "User1" ).
-                password( "123456" ).
-                build();
+        runAsAdmin( () ->
+                    {
+                        final PrincipalKey userKey1 = PrincipalKey.ofUser( SYSTEM, "User1" );
+                        final CreateUserParams createUser1 = CreateUserParams.create().
+                            userKey( userKey1 ).
+                            displayName( "User 1" ).
+                            email( "user1@enonic.com" ).
+                            login( "User1" ).
+                            password( "123456" ).
+                            build();
 
-            securityService.createUser( createUser1 );
-            securityService.createUser( createUser1 );
-        } );
+                        securityService.createUser( createUser1 );
+                        securityService.createUser( createUser1 );
+                    } );
     }
 
     @Test
@@ -300,17 +301,18 @@ public class SecurityServiceImplTest
     public void testCreateGroupThrowsExceptionWhenNameIsOccupied()
         throws Exception
     {
-        runAsAdmin( () -> {
-            final PrincipalKey groupKey1 = PrincipalKey.ofGroup( SYSTEM, "Group-a" );
-            final CreateGroupParams createGroup = CreateGroupParams.create().
-                groupKey( groupKey1 ).
-                displayName( "Group A" ).
-                description( "Group A Description" ).
-                build();
+        runAsAdmin( () ->
+                    {
+                        final PrincipalKey groupKey1 = PrincipalKey.ofGroup( SYSTEM, "Group-a" );
+                        final CreateGroupParams createGroup = CreateGroupParams.create().
+                            groupKey( groupKey1 ).
+                            displayName( "Group A" ).
+                            description( "Group A Description" ).
+                            build();
 
-            securityService.createGroup( createGroup );
-            securityService.createGroup( createGroup );
-        } );
+                        securityService.createGroup( createGroup );
+                        securityService.createGroup( createGroup );
+                    } );
     }
 
     @Test
@@ -381,17 +383,18 @@ public class SecurityServiceImplTest
     public void testCreateRoleThrowsExceptionWhenNameIsOccupied()
         throws Exception
     {
-        runAsAdmin( () -> {
-            final PrincipalKey roleKey1 = PrincipalKey.ofRole( "Role-a" );
-            final CreateRoleParams createRole = CreateRoleParams.create().
-                roleKey( roleKey1 ).
-                displayName( "Role A" ).
-                description( "Group A Description" ).
-                build();
+        runAsAdmin( () ->
+                    {
+                        final PrincipalKey roleKey1 = PrincipalKey.ofRole( "Role-a" );
+                        final CreateRoleParams createRole = CreateRoleParams.create().
+                            roleKey( roleKey1 ).
+                            displayName( "Role A" ).
+                            description( "Group A Description" ).
+                            build();
 
-            securityService.createRole( createRole );
-            securityService.createRole( createRole );
-        } );
+                        securityService.createRole( createRole );
+                        securityService.createRole( createRole );
+                    } );
     }
 
     @Test
@@ -855,23 +858,24 @@ public class SecurityServiceImplTest
     public void testCreateUserStoreThrowsExceptionWhenNameIsOccupied()
         throws Exception
     {
-        runAsAdmin( () -> {
-            final PrincipalKey userKey = PrincipalKey.ofUser( SYSTEM, "User1" );
+        runAsAdmin( () ->
+                    {
+                        final PrincipalKey userKey = PrincipalKey.ofUser( SYSTEM, "User1" );
 
-            final UserStoreAccessControlList permissions =
-                UserStoreAccessControlList.of( UserStoreAccessControlEntry.create().principal( userKey ).access( CREATE_USERS ).build() );
+                        final UserStoreAccessControlList permissions = UserStoreAccessControlList.of(
+                            UserStoreAccessControlEntry.create().principal( userKey ).access( CREATE_USERS ).build() );
 
-            final CreateUserStoreParams createUserStore = CreateUserStoreParams.create().
-                key( UserStoreKey.from( "enonic" ) ).
-                displayName( "Enonic User Store" ).
-                permissions( permissions ).
-                description( "user store description" ).
-                build();
+                        final CreateUserStoreParams createUserStore = CreateUserStoreParams.create().
+                            key( UserStoreKey.from( "enonic" ) ).
+                            displayName( "Enonic User Store" ).
+                            permissions( permissions ).
+                            description( "user store description" ).
+                            build();
 
-            securityService.createUserStore( createUserStore );
-            securityService.createUserStore( createUserStore );
+                        securityService.createUserStore( createUserStore );
+                        securityService.createUserStore( createUserStore );
 
-        } );
+                    } );
     }
 
     @Test
