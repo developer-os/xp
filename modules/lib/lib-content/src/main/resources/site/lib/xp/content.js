@@ -229,6 +229,7 @@ exports.getChildren = function (params) {
  * @param {string} [params.language] The language tag representing the content’s locale.
  * @param {string} [params.branch] Set by portal, depending on context, to either draft or master. May be overridden, but this is not recommended. Default is the current branch set in portal.
  * @param {object} params.data Actual content data.
+ * @param {object} [params.page] Page data.
  * @param {object} [params.x] eXtra data to use.
  *
  * @returns {object} Content created as JSON.
@@ -245,6 +246,7 @@ exports.create = function (params) {
     bean.branch = nullOrValue(params.branch);
 
     bean.data = __.toScriptValue(params.data);
+    bean.page = __.toScriptValue(params.page);
     bean.x = __.toScriptValue(params.x);
 
     bean.idGenerator = nullOrValue(params.idGenerator);

@@ -20,7 +20,7 @@ import com.enonic.xp.region.PartDescriptor;
 import com.enonic.xp.region.PartDescriptorService;
 import com.enonic.xp.region.Region;
 
-final class PageDefaultValuesProcessor
+public final class PageDefaultValuesProcessor
 {
     private final PageDescriptorService pageDescriptorService;
 
@@ -30,7 +30,7 @@ final class PageDefaultValuesProcessor
 
     private final FormDefaultValuesProcessor formDefaultValuesProcessor;
 
-    PageDefaultValuesProcessor( final PageDescriptorService pageDescriptorService, final PartDescriptorService partDescriptorService,
+    public PageDefaultValuesProcessor( final PageDescriptorService pageDescriptorService, final PartDescriptorService partDescriptorService,
                                 final LayoutDescriptorService layoutDescriptorService,
                                 final FormDefaultValuesProcessor formDefaultValuesProcessor )
     {
@@ -53,7 +53,7 @@ final class PageDefaultValuesProcessor
         }
     }
 
-    void applyDefaultValues( final Page newPage )
+    public void applyDefaultValues( final Page newPage )
     {
         if ( newPage.getController() != null )
         {

@@ -24,6 +24,7 @@ import com.enonic.xp.content.CreateContentParams;
 import com.enonic.xp.content.CreateContentTranslatorParams;
 import com.enonic.xp.content.ExtraDatas;
 import com.enonic.xp.context.ContextAccessor;
+import com.enonic.xp.core.impl.content.page.PageDefaultValuesProcessor;
 import com.enonic.xp.core.impl.content.processor.ContentProcessor;
 import com.enonic.xp.core.impl.content.processor.ProcessCreateParams;
 import com.enonic.xp.core.impl.content.processor.ProcessCreateResult;
@@ -60,6 +61,8 @@ final class CreateContentCommand
 
     private final FormDefaultValuesProcessor formDefaultValuesProcessor;
 
+    private final PageDefaultValuesProcessor pageDefaultValuesProcessor;
+
     private final PageDescriptorService pageDescriptorService;
 
     private final PartDescriptorService partDescriptorService;
@@ -75,6 +78,9 @@ final class CreateContentCommand
         this.pageDescriptorService = builder.pageDescriptorService;
         this.partDescriptorService = builder.partDescriptorService;
         this.layoutDescriptorService = builder.layoutDescriptorService;
+        this.pageDefaultValuesProcessor =
+            new PageDefaultValuesProcessor( pageDescriptorService, partDescriptorService, layoutDescriptorService,
+                                            formDefaultValuesProcessor );
     }
 
     static Builder create()
@@ -98,6 +104,7 @@ final class CreateContentCommand
 
         final ContentType contentType = contentTypeService.getByName( new GetContentTypeParams().contentTypeName( params.getType() ) );
         formDefaultValuesProcessor.setDefaultValues( contentType.getForm(), params.getData() );
+        pageDefaultValuesProcessor.applyDefaultValues( params.getPage() );
         // TODO apply default values to xData
 
         CreateContentParams processedParams = processCreateContentParams();
@@ -105,7 +112,7 @@ final class CreateContentCommand
         final CreateContentTranslatorParams createContentTranslatorParams = createContentTranslatorParams( processedParams );
 
         final CreateNodeParams createNodeParams = CreateNodeParamsFactory.create( createContentTranslatorParams ).
-            contentTypeService(this.contentTypeService ).
+            contentTypeService( this.contentTypeService ).
             pageDescriptorService( this.pageDescriptorService ).
             mixinService( this.mixinService ).
             partDescriptorService( this.partDescriptorService ).

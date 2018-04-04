@@ -66,7 +66,7 @@ public class CreateNodeParamsFactory
 
         final Page page = pageSet != null ? ContentDataSerializer.PAGE_SERIALIZER.fromData( pageSet ) : null;
 
-        final ExtraDatas extraData = pageSet != null ? ContentDataSerializer.EXTRA_DATA_SERIALIZER.fromData( extraDataSet ) : null;
+        final ExtraDatas extraData = extraDataSet != null ? ContentDataSerializer.EXTRA_DATA_SERIALIZER.fromData( extraDataSet ) : null;
 
         final ContentIndexConfigFactory.Builder indexConfigFactoryBuilder = ContentIndexConfigFactory.create().
             contentTypeName( params.getType() ).

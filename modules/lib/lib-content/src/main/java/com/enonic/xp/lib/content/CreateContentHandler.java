@@ -18,6 +18,9 @@ import com.enonic.xp.content.ExtraDatas;
 import com.enonic.xp.data.PropertyTree;
 import com.enonic.xp.lib.content.mapper.ContentMapper;
 import com.enonic.xp.name.NamePrettyfier;
+import com.enonic.xp.page.DescriptorKey;
+import com.enonic.xp.page.Page;
+import com.enonic.xp.page.PageTemplateKey;
 import com.enonic.xp.schema.content.ContentTypeName;
 import com.enonic.xp.schema.mixin.MixinName;
 import com.enonic.xp.script.ScriptValue;
@@ -43,6 +46,8 @@ public final class CreateContentHandler
     private Map<String, Object> data;
 
     private Map<String, Object> x;
+
+    private Map<String, Object> page;
 
     private String contentType;
 
@@ -79,6 +84,7 @@ public final class CreateContentHandler
             type( contentTypeName ).
             contentData( createPropertyTree( data, contentTypeName ) ).
             extraDatas( createExtraDatas( x ) ).
+            page( createPage( page ) ).
             language( language != null ? Locale.forLanguageTag( language ) : null ).
             refresh( this.refresh ).
             build();
@@ -118,6 +124,32 @@ public final class CreateContentHandler
     {
         ObjectMapper mapper = new ObjectMapper();
         return mapper.valueToTree( value );
+    }
+
+    private Page createPage( final Map<String, Object> value )
+    {
+        if ( value == null )
+        {
+            return null;
+        }
+
+        final Page.Builder page = Page.create();
+
+        if ( value.containsKey( "controller" ) )
+        {
+            DescriptorKey controller = DescriptorKey.from( (String) value.get( "controller" ) );
+            page.controller( controller );
+        }
+
+        if ( value.containsKey( "template" ) )
+        {
+            PageTemplateKey template = PageTemplateKey.from( (String) value.get( "template" ) );
+            page.template( template );
+        }
+
+        //TODO
+
+        return page.build();
     }
 
     private ExtraDatas createExtraDatas( final Map<String, Object> value )
@@ -217,6 +249,11 @@ public final class CreateContentHandler
     public void setData( final ScriptValue data )
     {
         this.data = data != null ? data.getMap() : null;
+    }
+
+    public void setPage( final ScriptValue page )
+    {
+        this.page = page != null ? page.getMap() : null;
     }
 
     public void setX( final ScriptValue x )

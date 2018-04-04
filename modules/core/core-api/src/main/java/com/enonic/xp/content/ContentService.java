@@ -16,6 +16,7 @@ import com.enonic.xp.util.BinaryReference;
 public interface ContentService
 {
 
+    @Deprecated
     Site create( CreateSiteParams params );
 
     Content create( CreateContentParams params );

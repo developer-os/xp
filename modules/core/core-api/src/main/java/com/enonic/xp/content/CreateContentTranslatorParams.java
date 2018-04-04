@@ -9,6 +9,7 @@ import com.google.common.base.Preconditions;
 import com.enonic.xp.attachment.CreateAttachments;
 import com.enonic.xp.data.PropertyTree;
 import com.enonic.xp.index.ChildOrder;
+import com.enonic.xp.page.Page;
 import com.enonic.xp.schema.content.ContentTypeName;
 import com.enonic.xp.security.PrincipalKey;
 import com.enonic.xp.security.acl.AccessControlList;
@@ -50,6 +51,8 @@ public class CreateContentTranslatorParams
 
     private final ContentPublishInfo contentPublishInfo;
 
+    private final Page page;
+
     private final Locale language;
 
     private CreateContentTranslatorParams( Builder builder )
@@ -74,6 +77,7 @@ public class CreateContentTranslatorParams
         this.childOrder = builder.childOrder;
         this.language = builder.language;
         this.contentPublishInfo = builder.contentPublishInfo;
+        this.page = builder.page;
     }
 
     public static Builder create( final CreateContentParams source )
@@ -176,6 +180,11 @@ public class CreateContentTranslatorParams
         return contentPublishInfo;
     }
 
+    public Page getPage()
+    {
+        return page;
+    }
+
     public static final class Builder
     {
         private PropertyTree data;
@@ -205,6 +214,8 @@ public class CreateContentTranslatorParams
         private ChildOrder childOrder;
 
         private ContentPublishInfo contentPublishInfo;
+        
+        private Page page;
 
         private Locale language;
 
@@ -227,6 +238,7 @@ public class CreateContentTranslatorParams
             this.childOrder = params.getChildOrder();
             this.language = params.getLanguage();
             this.contentPublishInfo = params.getContentPublishInfo();
+            this.page = params.getPage();
         }
 
         public Builder contentData( final PropertyTree data )
@@ -322,6 +334,12 @@ public class CreateContentTranslatorParams
         public Builder contentPublishInfo( final ContentPublishInfo info )
         {
             this.contentPublishInfo = info;
+            return this;
+        }
+
+        public Builder page( final Page page )
+        {
+            this.page = page;
             return this;
         }
 

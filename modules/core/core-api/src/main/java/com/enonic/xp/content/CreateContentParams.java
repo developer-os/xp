@@ -8,6 +8,7 @@ import com.google.common.base.Preconditions;
 import com.enonic.xp.attachment.CreateAttachments;
 import com.enonic.xp.data.PropertyTree;
 import com.enonic.xp.index.ChildOrder;
+import com.enonic.xp.page.Page;
 import com.enonic.xp.schema.content.ContentTypeName;
 import com.enonic.xp.security.PrincipalKey;
 import com.enonic.xp.security.acl.AccessControlList;
@@ -45,6 +46,8 @@ public final class CreateContentParams
 
     private final ContentPublishInfo contentPublishInfo;
 
+    private final Page page;
+
     private CreateContentParams( Builder builder )
     {
         this.data = builder.data;
@@ -62,6 +65,7 @@ public final class CreateContentParams
         this.language = builder.language;
         this.refresh = builder.refresh;
         this.contentPublishInfo = builder.contentPublishInfo;
+        this.page = builder.page;
     }
 
     public static Builder create()
@@ -144,6 +148,11 @@ public final class CreateContentParams
         return contentPublishInfo;
     }
 
+    public Page getPage()
+    {
+        return page;
+    }
+
     public boolean isRefresh()
     {
         return refresh;
@@ -152,7 +161,7 @@ public final class CreateContentParams
     public static final class Builder
     {
         private PropertyTree data;
-
+        
         private ExtraDatas extraDatas;
 
         private ContentTypeName type;
@@ -179,6 +188,8 @@ public final class CreateContentParams
 
         private ContentPublishInfo contentPublishInfo;
 
+        private Page page;
+
         private boolean refresh = true;
 
         private Builder()
@@ -201,6 +212,7 @@ public final class CreateContentParams
             this.childOrder = source.childOrder;
             this.language = source.language;
             this.contentPublishInfo = source.contentPublishInfo;
+            this.page = source.page;
         }
 
         public Builder contentData( final PropertyTree data )
@@ -208,6 +220,7 @@ public final class CreateContentParams
             this.data = data;
             return this;
         }
+
 
         public Builder extraDatas( final ExtraDatas extraDatas )
         {
@@ -297,6 +310,12 @@ public final class CreateContentParams
         public Builder contentPublishInfo( final ContentPublishInfo info )
         {
             this.contentPublishInfo = info;
+            return this;
+        }
+
+        public Builder page( final Page page )
+        {
+            this.page = page;
             return this;
         }
 

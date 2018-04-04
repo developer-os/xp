@@ -22,6 +22,7 @@ import com.enonic.xp.content.UpdateContentTranslatorParams;
 import com.enonic.xp.data.PropertySet;
 import com.enonic.xp.data.PropertyTree;
 import com.enonic.xp.icon.Thumbnail;
+import com.enonic.xp.page.Page;
 import com.enonic.xp.schema.content.ContentTypeName;
 import com.enonic.xp.security.PrincipalKey;
 import com.enonic.xp.util.BinaryReference;
@@ -50,7 +51,7 @@ public final class ContentDataSerializer
 {
     public static final PageDataSerializer PAGE_SERIALIZER = new PageDataSerializer( ContentPropertyNames.PAGE );
 
-    public static final ExtraDataSerializer EXTRA_DATA_SERIALIZER = new ExtraDataSerializer( );
+    public static final ExtraDataSerializer EXTRA_DATA_SERIALIZER = new ExtraDataSerializer();
 
     public PropertyTree toCreateNodeData( final CreateContentTranslatorParams params )
     {
@@ -74,7 +75,6 @@ public final class ContentDataSerializer
         addPublishInfo( contentAsData, params.getContentPublishInfo() );
 
         final ExtraDatas extraData = params.getExtraDatas();
-
         if ( extraData != null && !extraData.isEmpty() )
         {
             EXTRA_DATA_SERIALIZER.toData( extraData, contentAsData );
@@ -83,6 +83,12 @@ public final class ContentDataSerializer
         if ( params.getCreateAttachments() != null )
         {
             addAttachmentInfoToDataset( params.getCreateAttachments(), contentAsData );
+        }
+
+        final Page page = params.getPage();
+        if ( page != null )
+        {
+            PAGE_SERIALIZER.toData( page, contentAsData );
         }
 
         return propertyTree;
@@ -210,7 +216,8 @@ public final class ContentDataSerializer
     {
         final ExtraDatas extraData = EXTRA_DATA_SERIALIZER.fromData( contentAsSet.getSet( EXTRA_DATA ) );
 
-        if(extraData != null && extraData.isNotEmpty()){
+        if ( extraData != null && extraData.isNotEmpty() )
+        {
             builder.extraDatas( extraData );
         }
     }
